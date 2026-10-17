@@ -1,1 +1,404 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>نظام إدارة محل الإلكترونيات والدش</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 75px); }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col antialiased">
+
+  <!-- شاشة الدخول بالـ PIN الافتراضي 1234 -->
+  <div id="login-modal" class="fixed inset-0 z-50 bg-slate-950 flex flex-col justify-center items-center p-6">
+    <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center">
+      <div class="w-16 h-16 bg-blue-600/20 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
+        <i data-lucide="satellite" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-xl font-bold text-white mb-1">محل الإلكترونيات والدش</h2>
+      <p class="text-xs text-slate-400 mb-6">أدخل رمز الدخول السريع (PIN) للمتابعة</p>
+      
+      <div class="mb-4">
+        <input type="password" id="login-pin" maxlength="6" inputmode="numeric" placeholder="••••" 
+               class="w-full text-center tracking-[1em] text-2xl py-3 bg-slate-800 border border-slate-700 rounded-2xl text-white focus:outline-none focus:border-blue-500 transition">
+        <p id="login-error" class="text-rose-500 text-xs mt-2 hidden">رمز الدخول غير صحيح، يرجى المحاولة ثانية</p>
+      </div>
+
+      <button onclick="handleLogin()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 transition font-bold text-white rounded-2xl shadow-lg shadow-blue-600/30">
+        تسجيل الدخول
+      </button>
+      <p class="text-[11px] text-slate-500 mt-4">الرمز الافتراضي: <span class="text-blue-400 font-bold">1234</span></p>
+    </div>
+  </div>
+
+  <!-- الشريط العلوي الرئيسي (Header) -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
+        <i data-lucide="tv-2" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h1 class="text-sm font-bold text-white leading-tight">الرادار للإلكترونيات والدش</h1>
+        <p class="text-[10px] text-emerald-400 flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> متصل بالسيرفر
+        </p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <div class="text-left bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-700/60">
+        <span id="current-user-name" class="block text-xs font-bold text-slate-200">المدير العام</span>
+        <span id="current-user-role" class="block text-[9px] text-blue-400 font-medium">صاحب المحل</span>
+      </div>
+      <button onclick="handleLogout()" title="خروج" class="p-2 text-slate-400 hover:text-rose-400 bg-slate-800 rounded-xl">
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- محتوى التطبيق الأساسي -->
+  <main class="flex-1 p-4 pb-safe max-w-lg mx-auto w-full">
+    
+    <!-- 1. الرئيسية واللوحة العامة -->
+    <section id="view-dashboard" class="space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-slate-800/60 border border-slate-800 p-3.5 rounded-2xl relative overflow-hidden">
+          <div class="text-slate-400 text-xs font-medium mb-1">مبيعات اليوم</div>
+          <div id="stat-today-sales" class="text-lg font-extrabold text-emerald-400">0.00 ج.م</div>
+          <i data-lucide="trending-up" class="w-8 h-8 text-emerald-500/10 absolute -bottom-1 left-2"></i>
+        </div>
+
+        <div class="bg-slate-800/60 border border-slate-800 p-3.5 rounded-2xl relative overflow-hidden">
+          <div class="text-slate-400 text-xs font-medium mb-1">نقدية الدرج (الخزينة)</div>
+          <div id="stat-cash-box" class="text-lg font-extrabold text-blue-400">0.00 ج.م</div>
+          <i data-lucide="wallet" class="w-8 h-8 text-blue-500/10 absolute -bottom-1 left-2"></i>
+        </div>
+
+        <div class="bg-slate-800/60 border border-slate-800 p-3.5 rounded-2xl relative overflow-hidden">
+          <div class="text-slate-400 text-xs font-medium mb-1">أوامر صيانة نشطة</div>
+          <div id="stat-active-services" class="text-lg font-extrabold text-amber-400">0</div>
+          <i data-lucide="wrench" class="w-8 h-8 text-amber-500/10 absolute -bottom-1 left-2"></i>
+        </div>
+
+        <div class="bg-slate-800/60 border border-slate-800 p-3.5 rounded-2xl relative overflow-hidden">
+          <div class="text-slate-400 text-xs font-medium mb-1">نواقص المخزن</div>
+          <div id="stat-low-stock" class="text-lg font-extrabold text-rose-400">0 أصناف</div>
+          <i data-lucide="alert-triangle" class="w-8 h-8 text-rose-500/10 absolute -bottom-1 left-2"></i>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-4">
+        <h3 class="text-xs font-bold text-slate-300 mb-3 flex items-center gap-2">
+          <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> عمليات سريعة
+        </h3>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="switchTab('pos')" class="flex items-center gap-2.5 p-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-medium text-xs shadow-md shadow-blue-600/20">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> فاتورة بيع جديدة
+          </button>
+          <button onclick="switchTab('services')" class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-100 font-medium text-xs border border-slate-700">
+            <i data-lucide="antenna" class="w-4 h-4 text-blue-400"></i> طلب صيانة / دش
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-slate-300">أحدث فواتير البيع</h3>
+          <span class="text-[10px] text-blue-400 cursor-pointer" onclick="switchTab('pos')">عرض الكل</span>
+        </div>
+        <div id="recent-invoices-list" class="space-y-2">
+          <div class="text-center py-6 text-xs text-slate-500">لا توجد فواتير بعد</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. شاشة المنتجات والمخزن -->
+    <section id="view-products" class="hidden space-y-4">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="boxes" class="w-5 h-5 text-blue-400"></i> المخزن والمنتجات
+        </h2>
+        <button onclick="openAddProductModal()" class="px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center gap-1.5 shadow-md">
+          <i data-lucide="plus" class="w-4 h-4"></i> صنف جديد
+        </button>
+      </div>
+
+      <div class="relative">
+        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute right-3.5 top-3.5"></i>
+        <input type="text" id="search-products-input" oninput="filterProducts()" placeholder="ابحث باسم المنتج..."
+               class="w-full bg-slate-800/80 border border-slate-700 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500">
+      </div>
+
+      <div id="products-list-container" class="space-y-2.5">
+        <div class="text-center py-8 text-xs text-slate-500">المخزن فارغ حالياً، اضغط "صنف جديد" لإضافة أول بضاعة!</div>
+      </div>
+    </section>
+
+    <!-- 3. شاشة البيع POS -->
+    <section id="view-pos" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i> كاشير نقطة البيع
+        </h2>
+      </div>
+
+      <div class="bg-slate-800/50 border border-slate-800 rounded-2xl p-3 space-y-2">
+        <label class="text-xs text-slate-300 font-medium">إضافة صنف للفاتورة:</label>
+        <select id="pos-select-product" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+          <option value="">اختر الصنف...</option>
+        </select>
+        <button onclick="addItemToCurrentInvoice()" class="w-full py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-bold text-slate-100 flex items-center justify-center gap-1">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة إلى السلة
+        </button>
+      </div>
+
+      <div id="pos-cart-items" class="space-y-2">
+        <div class="text-center py-8 text-slate-500 text-xs border border-dashed border-slate-800 rounded-2xl">
+          لم يتم إضافة أصناف بعد
+        </div>
+      </div>
+
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 space-y-3">
+        <div class="flex justify-between items-center text-sm font-bold">
+          <span class="text-slate-300">الإجمالي:</span>
+          <span id="pos-cart-total" class="text-lg text-emerald-400">0.00 ج.م</span>
+        </div>
+        <input type="text" id="pos-customer-name" placeholder="اسم العميل (اختياري)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        <button onclick="confirmAndSaveInvoice()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 rounded-xl font-bold text-white text-xs shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i> حفظ وطباعة الفاتورة
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. شاشة الصيانة والدش -->
+    <section id="view-services" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="antenna" class="w-5 h-5 text-amber-400"></i> الصيانة وتركيب الدش
+        </h2>
+      </div>
+      <div class="text-center py-8 text-xs text-slate-500">لا توجد طلبات صيانة حالية</div>
+    </section>
+
+    <!-- 5. الخزينة والمصروفات -->
+    <section id="view-expenses" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="wallet" class="w-5 h-5 text-rose-400"></i> المصروفات والخزينة
+        </h2>
+      </div>
+      <div class="text-center py-8 text-xs text-slate-500">لا توجد مصروفات مسجلة اليوم</div>
+    </section>
+
+  </main>
+
+  <!-- شريط التنقل السفلي -->
+  <nav class="fixed bottom-0 inset-x-0 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 z-40 px-2 py-1.5 flex justify-around items-center">
+    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 py-1 px-3 text-blue-500">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold">الرئيسية</span>
+    </button>
+    <button onclick="switchTab('pos')" id="nav-pos" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-400">
+      <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium">البيع POS</span>
+    </button>
+    <button onclick="switchTab('products')" id="nav-products" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-400">
+      <i data-lucide="package" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium">المخزن</span>
+    </button>
+    <button onclick="switchTab('services')" id="nav-services" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-400">
+      <i data-lucide="antenna" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium">الصيانة</span>
+    </button>
+    <button onclick="switchTab('expenses')" id="nav-expenses" class="flex flex-col items-center gap-1 py-1 px-3 text-slate-400">
+      <i data-lucide="wallet" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium">الخزينة</span>
+    </button>
+  </nav>
+
+  <!-- نافذة إضافة منتج -->
+  <div id="modal-add-product" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+        <h3 class="text-sm font-bold text-white">إضافة صنف جديد للمحل</h3>
+        <button onclick="closeModal('modal-add-product')" class="text-slate-400 text-lg">✕</button>
+      </div>
+      <div>
+        <label class="text-[11px] text-slate-400 block mb-1">اسم الصنف (طبق دش، رسيفر، كاميرا...)</label>
+        <input type="text" id="new-prod-name" placeholder="مثال: رسيفر استرا HD" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[11px] text-slate-400 block mb-1">سعر الشراء</label>
+          <input type="number" id="new-prod-cost" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        </div>
+        <div>
+          <label class="text-[11px] text-slate-400 block mb-1">سعر البيع</label>
+          <input type="number" id="new-prod-price" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[11px] text-slate-400 block mb-1">الكمية</label>
+          <input type="number" id="new-prod-stock" value="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        </div>
+        <div>
+          <label class="text-[11px] text-slate-400 block mb-1">القسم</label>
+          <select id="new-prod-cat" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+            <option>أطباق دش ومستلزمات إشارة</option>
+            <option>رسيفرات وأجهزة استقبال</option>
+            <option>كاميرات مراقبة وأجهزة DVR/NVR</option>
+            <option>شاشات وتلفزيونات وحوامل</option>
+            <option>كابلات وأسلاك وتوصيلات</option>
+            <option>ريموتات وشواحن وإكسسوارات</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="saveNewProduct()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white mt-2">حفظ الصنف في قاعدة البيانات</button>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://mvzrkiqypxnfrxnocole.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12enJraXF5cHhuZnJ4bm9jb2xlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyMzUwMjcsImV4cCI6MjEwNzgxMTAyN30.b8B-JsyqJnCjx7gNsLOtPbLWnx4SpBKMBf06nRSxQT8";
+    
+    let db = null;
+    try {
+      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch(e) { console.error(e); }
+
+    let currentUser = null;
+    let allProducts = [];
+
+    async function handleLogin() {
+      const pin = document.getElementById('login-pin').value;
+      const err = document.getElementById('login-error');
+      
+      if (!pin) return;
+
+      if (pin === "1234") {
+        document.getElementById('login-modal').classList.add('hidden');
+        loadDashboardData();
+        loadProducts();
+      } else {
+        err.classList.remove('hidden');
+      }
+    }
+
+    function handleLogout() {
+      document.getElementById('login-modal').classList.remove('hidden');
+      document.getElementById('login-pin').value = '';
+    }
+
+    function switchTab(tabId) {
+      ['dashboard', 'pos', 'products', 'services', 'expenses'].forEach(t => {
+        const v = document.getElementById(`view-${t}`);
+        const n = document.getElementById(`nav-${t}`);
+        if (v) v.classList.add('hidden');
+        if (n) {
+          n.classList.remove('text-blue-500');
+          n.classList.add('text-slate-400');
+        }
+      });
+
+      const activeView = document.getElementById(`view-${tabId}`);
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeNav) {
+        activeNav.classList.remove('text-slate-400');
+        activeNav.classList.add('text-blue-500');
+      }
+
+      if (tabId === 'products') loadProducts();
+      if (tabId === 'dashboard') loadDashboardData();
+    }
+
+    async function loadDashboardData() {
+      if (!db) return;
+      const today = new Date().toISOString().split('T')[0];
+      const { data: invoices } = await db.from('invoices').select('*').gte('created_at', today);
+      let salesTotal = 0;
+      if (invoices) {
+        salesTotal = invoices.reduce((acc, cur) => acc + Number(cur.final_total || 0), 0);
+      }
+      document.getElementById('stat-today-sales').innerText = salesTotal.toFixed(2) + ' ج.م';
+
+      const { data: prods } = await db.from('products').select('*');
+      if (prods) {
+        const low = prods.filter(p => p.stock_quantity <= p.min_stock_alert);
+        document.getElementById('stat-low-stock').innerText = low.length + ' أصناف';
+      }
+    }
+
+    async function loadProducts() {
+      if (!db) return;
+      const { data } = await db.from('products').select('*').order('created_at', { ascending: false });
+      if (data) {
+        allProducts = data;
+        renderProducts(data);
+      }
+    }
+
+    function renderProducts(items) {
+      const container = document.getElementById('products-list-container');
+      if (!items || items.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-xs text-slate-500">المخزن فارغ حالياً، اضغط "صنف جديد" لإضافة أول بضاعة!</div>';
+        return;
+      }
+      container.innerHTML = items.map(p => `
+        <div class="bg-slate-800/70 border border-slate-800 rounded-2xl p-3.5 flex items-center justify-between">
+          <div>
+            <div class="text-xs font-bold text-white">${p.name}</div>
+            <div class="text-[10px] text-slate-400 mt-1">${p.category} | التكلفة: ${p.cost_price} ج.م</div>
+          </div>
+          <div class="text-left">
+            <span class="text-sm font-extrabold text-blue-400 block">${p.selling_price} ج.م</span>
+            <span class="text-[10px] text-slate-300">الكمية: <strong class="text-white">${p.stock_quantity}</strong></span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openAddProductModal() { document.getElementById('modal-add-product').classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    async function saveNewProduct() {
+      const name = document.getElementById('new-prod-name').value.trim();
+      const cost = parseFloat(document.getElementById('new-prod-cost').value) || 0;
+      const price = parseFloat(document.getElementById('new-prod-price').value) || 0;
+      const stock = parseInt(document.getElementById('new-prod-stock').value) || 0;
+      const cat = document.getElementById('new-prod-cat').value;
+
+      if (!name || price <= 0) {
+        alert('يرجى كتابة اسم الصنف وسعر البيع');
+        return;
+      }
+
+      await db.from('products').insert([{
+        name, cost_price: cost, selling_price: price, stock_quantity: stock, category: cat
+      }]);
+
+      closeModal('modal-add-product');
+      document.getElementById('new-prod-name').value = '';
+      loadProducts();
+    }
+
+    try { lucide.createIcons(); } catch(e){}
+  </script>
+</body>
+</html>
