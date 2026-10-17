@@ -25,28 +25,25 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-blue-600">
 
-  <!-- ==================== شاشة تسجيل الدخول بالـ PIN ==================== -->
+  <!-- ==================== شاشة تسجيل الدخول بالـ PIN الجديد 1896 ==================== -->
   <div id="login-modal" class="fixed inset-0 z-50 bg-slate-950 flex flex-col justify-center items-center p-6">
     <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center">
       <div class="w-16 h-16 bg-blue-600/20 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-blue-500/30">
         <i data-lucide="satellite" class="w-8 h-8"></i>
       </div>
       <h2 class="text-xl font-extrabold text-white mb-1">الرادار للإلكترونيات والدش</h2>
-      <p class="text-xs text-slate-400 mb-5">أدخل رمز الدخول (PIN) لبدء الوردية</p>
+      <p class="text-xs text-slate-400 mb-5">أدخل رمز الدخول (PIN) للبدء</p>
       
       <div class="mb-4">
         <input type="password" id="login-pin" maxlength="6" inputmode="numeric" placeholder="••••" 
                class="w-full text-center tracking-[0.8em] text-3xl font-bold py-3.5 bg-slate-800/90 border border-slate-700 rounded-2xl text-white focus:outline-none focus:border-blue-500 transition">
-        <p id="login-error" class="text-rose-500 text-xs mt-2.5 hidden font-medium">رمز الـ PIN غير صحيح، يرجى إعادة المحاولة</p>
+        <p id="login-error" class="text-rose-500 text-xs mt-2.5 hidden font-medium">رمز الدخول غير صحيح، يرجى المحاولة ثانية</p>
       </div>
 
       <button onclick="handleLogin()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 transition font-bold text-white rounded-2xl shadow-lg shadow-blue-600/30 text-sm">
         دخول النظام
       </button>
-
-      <div class="mt-5 pt-4 border-t border-slate-800 text-[11px] text-slate-400">
-        الرمز الافتراضي للمدير: <span class="text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded-lg"></span>
-      </div>
+    </div>
   </div>
 
   <!-- ==================== الشريط العلوي الرئيسي (Header) ==================== -->
@@ -56,7 +53,7 @@
         <i data-lucide="tv-2" class="w-5 h-5"></i>
       </div>
       <div>
-        <h1 class="text-xs font-bold text-white"> Moody </h1>
+        <h1 class="text-xs font-bold text-white">الرادار للدش والكاميرات</h1>
         <p id="app-status-badge" class="text-[9px] text-emerald-400 flex items-center gap-1">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> سحابي متصل
         </p>
@@ -79,7 +76,6 @@
     
     <!-- 1. الرئيسية واللوحة العامة (Dashboard) -->
     <section id="view-dashboard" class="space-y-3.5">
-      <!-- الإحصائيات -->
       <div class="grid grid-cols-2 gap-2.5">
         <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl relative overflow-hidden">
           <div class="text-slate-400 text-[11px] font-medium mb-1">مبيعات اليوم</div>
@@ -137,7 +133,6 @@
         <button onclick="clearCurrentCart()" class="text-[11px] text-rose-400 hover:underline">مسح السلة</button>
       </div>
 
-      <!-- اختيار المنتجات للإضافة -->
       <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 space-y-2.5">
         <label class="text-[11px] text-slate-300 font-bold block">اختر الصنف للإضافة للفاتورة:</label>
         <select id="pos-select-product" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
@@ -151,14 +146,12 @@
         </div>
       </div>
 
-      <!-- بنود الفاتورة الحالية -->
       <div id="pos-cart-items" class="space-y-2">
         <div class="text-center py-8 text-slate-500 text-xs border border-dashed border-slate-800 rounded-2xl">
           لم يتم إضافة أصناف للفاتورة بعد
         </div>
       </div>
 
-      <!-- ملخص وإنهاء الفاتورة -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
         <div class="flex justify-between items-center text-sm font-bold pb-2 border-b border-slate-800">
           <span class="text-slate-300">الإجمالي النهائي:</span>
@@ -202,26 +195,23 @@
         </button>
       </div>
 
-      <!-- إحصائيات المخزن لصاحب المحل فقط -->
       <div id="stock-val-card" class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center text-xs">
         <div>
-          <span class="text-slate-400 block text-[10px]">إجمالي قيمة البضاعة (شراء)</span>
+          <span class="text-slate-400 block text-[10px]">قيمة البضاعة بسعر الشراء</span>
           <span id="stock-cost-total" class="font-extrabold text-blue-400 text-sm">0.00 ج.م</span>
         </div>
         <div class="text-left">
-          <span class="text-slate-400 block text-[10px]">إجمالي قيمة البضاعة (بيع)</span>
+          <span class="text-slate-400 block text-[10px]">قيمة البضاعة بسعر البيع</span>
           <span id="stock-sell-total" class="font-extrabold text-emerald-400 text-sm">0.00 ج.م</span>
         </div>
       </div>
 
-      <!-- خانة البحث -->
       <div class="relative">
         <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute right-3.5 top-3"></i>
         <input type="text" id="search-products-input" oninput="filterProductsUI()" placeholder="ابحث باسم المنتج أو الصنف..."
                class="w-full bg-slate-900 border border-slate-700 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500">
       </div>
 
-      <!-- قائمة المنتجات -->
       <div id="products-list-container" class="space-y-2">
         <div class="text-center py-6 text-xs text-slate-500">جاري قراءة الأصناف...</div>
       </div>
@@ -310,7 +300,7 @@
 
   <!-- ==================== النوافذ المنبثقة (Modals) ==================== -->
 
-  <!-- نافذة إضافة موظف وتحديد صلاحياته -->
+  <!-- نافذة إضافة موظف -->
   <div id="modal-add-user" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b border-slate-800">
@@ -325,31 +315,28 @@
 
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">اسم المستخدم (إنجليزي)</label>
+          <label class="text-[10px] text-slate-400 block mb-1">اسم المستخدم</label>
           <input type="text" id="new-user-username" placeholder="ahmed" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">رمز الدخول السريع (PIN)</label>
+          <label class="text-[10px] text-slate-400 block mb-1">رمز الدخول (PIN)</label>
           <input type="text" id="new-user-pin" placeholder="5555" maxlength="6" inputmode="numeric" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
         </div>
       </div>
 
       <div class="pt-2 border-t border-slate-800 space-y-2">
         <span class="text-[11px] font-bold text-slate-200 block mb-1">صلاحيات هذا الموظف:</span>
-        
         <label class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-reports" class="w-4 h-4 rounded text-blue-600">
-          <span>مشاهدة التقارير والأرباح وأسعار الشراء</span>
+          <span>مشاهدة الأرباح وأسعار التكلفة</span>
         </label>
-
         <label class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-inventory" class="w-4 h-4 rounded text-blue-600">
           <span>إضافة وتعديل أصناف المخزن</span>
         </label>
-
         <label class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-discounts" class="w-4 h-4 rounded text-blue-600">
-          <span>السماح بإعطاء خصومات في الفواتير</span>
+          <span>السماح بخصومات في الفواتير</span>
         </label>
       </div>
 
@@ -359,7 +346,7 @@
     </div>
   </div>
 
-  <!-- نافذة إضافة منتج للمخزن -->
+  <!-- نافذة إضافة منتج -->
   <div id="modal-add-product" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b border-slate-800">
@@ -367,8 +354,8 @@
         <button onclick="closeModal('modal-add-product')" class="text-slate-400 text-lg">✕</button>
       </div>
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">اسم الصنف (رسيفر، طبق دش، كاميرا، كابل...)</label>
-        <input type="text" id="new-prod-name" placeholder="مثال: رسيفر استرا 10100 HD" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+        <label class="text-[10px] text-slate-400 block mb-1">اسم الصنف</label>
+        <input type="text" id="new-prod-name" placeholder="مثال: رسيفر استرا HD" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
@@ -376,17 +363,17 @@
           <input type="number" id="new-prod-cost" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">سعر البيع للجمهور</label>
+          <label class="text-[10px] text-slate-400 block mb-1">سعر البيع</label>
           <input type="number" id="new-prod-price" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
         </div>
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">الكمية بالمخزن</label>
+          <label class="text-[10px] text-slate-400 block mb-1">الكمية</label>
           <input type="number" id="new-prod-stock" value="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">تنبيه عند وصول المخزن إلى</label>
+          <label class="text-[10px] text-slate-400 block mb-1">تنبيه النواقص عند</label>
           <input type="number" id="new-prod-alert" value="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
         </div>
       </div>
@@ -405,11 +392,11 @@
     </div>
   </div>
 
-  <!-- نافذة طلب صيانة وتركيب دش/كاميرات -->
+  <!-- نافذة طلب صيانة -->
   <div id="modal-add-service" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-xs font-bold text-white">تسجيل أمر تركيب / صيانة خارجية</h3>
+        <h3 class="text-xs font-bold text-white">تسجيل أمر تركيب / صيانة</h3>
         <button onclick="closeModal('modal-add-service')" class="text-slate-400 text-lg">✕</button>
       </div>
       <div class="grid grid-cols-2 gap-2">
@@ -434,16 +421,16 @@
       </div>
       <div>
         <label class="text-[10px] text-slate-400 block mb-1">العنوان والملاحظات</label>
-        <input type="text" id="srv-address" placeholder="العنوان بالتفصيل" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        <input type="text" id="srv-address" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">المبلغ المطلوب من العميل</label>
+          <label class="text-[10px] text-slate-400 block mb-1">المبلغ المطلوب</label>
           <input type="number" id="srv-charge" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">اسم الفني المسؤول</label>
-          <input type="text" id="srv-tech" placeholder="اسم الفني" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="text-[10px] text-slate-400 block mb-1">اسم الفني</label>
+          <input type="text" id="srv-tech" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
         </div>
       </div>
       <button onclick="saveNewServiceOrder()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white">تسجيل أمر الصيانة</button>
@@ -454,7 +441,7 @@
   <div id="modal-add-expense" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3">
       <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-xs font-bold text-white">تسجيل مصروف جديد من الخزينة</h3>
+        <h3 class="text-xs font-bold text-white">تسجيل مصروف من الخزينة</h3>
         <button onclick="closeModal('modal-add-expense')" class="text-slate-400 text-lg">✕</button>
       </div>
       <div>
@@ -474,13 +461,13 @@
       </div>
       <div>
         <label class="text-[10px] text-slate-400 block mb-1">بيان / ملاحظات</label>
-        <input type="text" id="exp-notes" placeholder="ملاحظات الصرف..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        <input type="text" id="exp-notes" placeholder="ملاحظات..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
       </div>
       <button onclick="saveNewExpense()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 rounded-xl font-bold text-xs text-white">تأكيد خصم المصروف</button>
     </div>
   </div>
 
-  <!-- ==================== كود التشغيل والاتصال بقاعدتك ==================== -->
+  <!-- ==================== كود الجافاسكربت ==================== -->
   <script>
     const SUPABASE_URL = "https://mvzrkiqypxnfrxnocole.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12enJraXF5cHhuZnJ4bm9jb2xlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyMzUwMjcsImV4cCI6MjEwNzgxMTAyN30.b8B-JsyqJnCjx7gNsLOtPbLWnx4SpBKMBf06nRSxQT8";
@@ -494,12 +481,50 @@
     let allProducts = [];
     let currentCart = [];
 
-    // تسجيل الدخول والتحقق من الصلاحيات
+    // تسجيل الدخول مع دعم رمز المدير 1896 مباشرة
     async function handleLogin() {
       const pin = document.getElementById('login-pin').value.trim();
       const err = document.getElementById('login-error');
       if (!pin) return;
 
+      // إذا كان الرمز هو رمز المدير 1896
+      if (pin === '1896') {
+        let { data } = await db.from('app_users').select('*').eq('role', 'owner').maybeSingle();
+        if (!data) {
+          const { data: newUser } = await db.from('app_users').upsert({
+            username: 'admin',
+            pin: '1896',
+            full_name: 'صاحب المحل (المدير العام)',
+            role: 'owner',
+            can_view_reports: true,
+            can_manage_inventory: true,
+            can_give_discounts: true,
+            is_active: true
+          }).select().single();
+          data = newUser;
+        } else if (data.pin !== '1896') {
+          await db.from('app_users').update({ pin: '1896' }).eq('id', data.id);
+          data.pin = '1896';
+        }
+
+        currentUser = data || {
+          username: 'admin',
+          pin: '1896',
+          full_name: 'صاحب المحل',
+          role: 'owner',
+          can_view_reports: true,
+          can_manage_inventory: true,
+          can_give_discounts: true
+        };
+
+        applyUserPermissions(currentUser);
+        document.getElementById('login-modal').classList.add('hidden');
+        loadDashboardData();
+        loadProducts();
+        return;
+      }
+
+      // إذا كان موظفاً برمز PIN آخر
       const { data, error } = await db.from('app_users').select('*').eq('pin', pin).eq('is_active', true).maybeSingle();
 
       if (data && !error) {
@@ -522,17 +547,10 @@
       const canInventory = isOwner || user.can_manage_inventory;
       const canDiscounts = isOwner || user.can_give_discounts;
 
-      // إخفاء الأرباح إن لم تكن لديه صلاحية
       document.getElementById('card-stat-profit').style.display = canReports ? 'block' : 'none';
       document.getElementById('stock-val-card').style.display = canReports ? 'flex' : 'none';
-
-      // إخفاء إضافة المنتجات بالمخزن إن لم تكن لديه صلاحية
       document.getElementById('btn-add-product').style.display = canInventory ? 'flex' : 'none';
-
-      // إخفاء الخصم في الفاتورة إن لم تكن لديه صلاحية
       document.getElementById('pos-discount-box').style.display = canDiscounts ? 'flex' : 'none';
-
-      // إخفاء تبويب الموظفين تماماً إلا لصاحب المحل
       document.getElementById('nav-users').style.display = isOwner ? 'flex' : 'none';
     }
 
@@ -542,7 +560,6 @@
       document.getElementById('login-pin').value = '';
     }
 
-    // التنقل بين الشاشات
     function switchTab(tabId) {
       if (tabId === 'users' && currentUser?.role !== 'owner') {
         alert('هذا القسم خاص بصاحب المحل فقط');
@@ -574,7 +591,7 @@
       if (tabId === 'users') loadUsers();
     }
 
-    // 1. لوحة البيانات
+    // 1. لوحة الإحصائيات
     async function loadDashboardData() {
       if (!db) return;
       const today = new Date().toISOString().split('T')[0];
@@ -677,7 +694,7 @@
       const cat = document.getElementById('new-prod-cat').value;
 
       if (!name || price <= 0) {
-        alert('يرجى إدخال اسم الصنف وسعر البيع بشكل صحيح');
+        alert('يرجى إدخال اسم الصنف وسعر البيع');
         return;
       }
 
@@ -773,7 +790,6 @@
       const customer = document.getElementById('pos-customer-name').value.trim() || 'عميل نقدي';
       const payMethod = document.getElementById('pos-payment-method').value;
 
-      // حفظ الفاتورة
       const { data: inv, error } = await db.from('invoices').insert([{
         customer_name: customer,
         total: subtotal,
@@ -785,7 +801,6 @@
       }]).select().single();
 
       if (!error && inv) {
-        // إنقاص المخزن وحفظ بنود الفاتورة
         for (const item of currentCart) {
           await db.from('invoice_items').insert([{
             invoice_id: inv.id,
@@ -803,7 +818,7 @@
           }
         }
 
-        alert(`تم حفظ الفاتورة رقم #${inv.invoice_number || ''} بنجاح!`);
+        alert(`تم حفظ الفاتورة #${inv.invoice_number || ''} بنجاح!`);
         clearCurrentCart();
         document.getElementById('pos-customer-name').value = '';
         loadProducts();
@@ -832,8 +847,8 @@
             </div>
             <div class="text-[10px] text-slate-400 mt-1">اسم المستخدم: ${u.username} | الـ PIN: <strong class="text-slate-200">${u.pin}</strong></div>
             <div class="text-[9px] text-slate-500 mt-0.5">
-              ${u.can_view_reports ? '✔ تقارير وأرباح ' : ''}
-              ${u.can_manage_inventory ? '✔ تعديل مخزن ' : ''}
+              ${u.can_view_reports ? '✔ أرباح ' : ''}
+              ${u.can_manage_inventory ? '✔ مخزن ' : ''}
               ${u.can_give_discounts ? '✔ خصومات' : ''}
             </div>
           </div>
@@ -890,7 +905,7 @@
       loadUsers();
     }
 
-    // 5. أوامر الصيانة
+    // 5. أوامر الصيانة والدش
     async function loadServices() {
       const { data } = await db.from('service_orders').select('*').order('created_at', { ascending: false });
       const container = document.getElementById('services-list-container');
@@ -973,7 +988,7 @@
       loadExpenses();
     }
 
-    // فتح وإغلاق النوافذ
+    // نوافذ
     function openAddProductModal() { document.getElementById('modal-add-product').classList.remove('hidden'); }
     function openAddServiceModal() { document.getElementById('modal-add-service').classList.remove('hidden'); }
     function openAddExpenseModal() { document.getElementById('modal-add-expense').classList.remove('hidden'); }
