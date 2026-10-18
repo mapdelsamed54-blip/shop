@@ -13,17 +13,65 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    :root {
+      --bg-base: #0b1120;
+      --bg-card: #0f172a;
+      --bg-card-sub: #1e293b;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary-color: #2563eb;
+    }
+    [data-theme="emerald"] {
+      --bg-base: #051a14;
+      --bg-card: #064e3b;
+      --bg-card-sub: #047857;
+      --border-color: #059669;
+      --text-main: #ecfdf5;
+      --text-muted: #6ee7b7;
+      --primary-color: #10b981;
+    }
+    [data-theme="indigo"] {
+      --bg-base: #0b0f19;
+      --bg-card: #1e1b4b;
+      --bg-card-sub: #312e81;
+      --border-color: #4338ca;
+      --text-main: #eef2ff;
+      --text-muted: #a5b4fc;
+      --primary-color: #6366f1;
+    }
+    [data-theme="oled"] {
+      --bg-base: #000000;
+      --bg-card: #111111;
+      --bg-card-sub: #1f1f1f;
+      --border-color: #2e2e2e;
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --primary-color: #3b82f6;
+    }
+    [data-theme="light"] {
+      --bg-base: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-card-sub: #f8fafc;
+      --border-color: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary-color: #2563eb;
+    }
     body {
       font-family: 'Tajawal', sans-serif;
       -webkit-tap-highlight-color: transparent;
-      background-color: #0b1120;
-      color: #f1f5f9;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
+    .theme-card { background-color: var(--bg-card); border-color: var(--border-color); }
+    .theme-subcard { background-color: var(--bg-card-sub); border-color: var(--border-color); }
     .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 75px); }
     input, select, textarea { font-size: 14px !important; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-blue-600">
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-600">
 
   <!-- ==================== شاشة تسجيل الدخول بالـ PIN الافتراضي 1896 ==================== -->
   <div id="login-modal" class="fixed inset-0 z-50 bg-slate-950 flex flex-col justify-center items-center p-6">
@@ -47,13 +95,13 @@
   </div>
 
   <!-- ==================== الشريط العلوي الرئيسي (Header) ==================== -->
-  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+  <header class="sticky top-0 z-40 theme-card backdrop-blur-md border-b px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-2.5">
       <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
         <i data-lucide="tv-2" class="w-5 h-5"></i>
       </div>
       <div>
-        <h1 class="text-xs font-bold text-white">الرادار للدش والكاميرات</h1>
+        <h1 class="text-xs font-bold leading-tight">الرادار للدش والكاميرات</h1>
         <p id="app-status-badge" class="text-[9px] text-emerald-400 flex items-center gap-1">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> سحابي متصل
         </p>
@@ -61,11 +109,16 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <div class="text-left bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-700/60">
-        <span id="current-user-name" class="block text-xs font-bold text-slate-200">المدير العام</span>
+      <!-- زر اختيار الثيم -->
+      <button onclick="openThemeModal()" title="تغيير الثيم" class="p-2 theme-subcard rounded-xl border hover:opacity-80 transition">
+        <i data-lucide="palette" class="w-4 h-4 text-amber-400"></i>
+      </button>
+
+      <div class="text-left theme-subcard px-2.5 py-1 rounded-xl border">
+        <span id="current-user-name" class="block text-xs font-bold">المدير العام</span>
         <span id="current-user-role" class="block text-[9px] text-blue-400 font-semibold">صاحب المحل</span>
       </div>
-      <button onclick="handleLogout()" title="تسجيل خروج" class="p-2 text-slate-400 hover:text-rose-400 bg-slate-800 rounded-xl transition">
+      <button onclick="handleLogout()" title="تسجيل خروج" class="p-2 text-slate-400 hover:text-rose-400 theme-subcard rounded-xl border transition">
         <i data-lucide="log-out" class="w-4 h-4"></i>
       </button>
     </div>
@@ -77,26 +130,26 @@
     <!-- 1. الرئيسية واللوحة العامة (Dashboard) -->
     <section id="view-dashboard" class="space-y-3.5">
       <div class="grid grid-cols-2 gap-2.5">
-        <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl relative overflow-hidden">
-          <div class="text-slate-400 text-[11px] font-medium mb-1">مبيعات اليوم</div>
+        <div class="theme-card border p-3 rounded-2xl relative overflow-hidden">
+          <div class="text-xs opacity-75 font-medium mb-1">مبيعات اليوم</div>
           <div id="stat-today-sales" class="text-base font-extrabold text-emerald-400">0.00 ج.م</div>
           <i data-lucide="trending-up" class="w-7 h-7 text-emerald-500/10 absolute -bottom-1 left-2"></i>
         </div>
 
-        <div id="card-stat-profit" class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl relative overflow-hidden">
-          <div class="text-slate-400 text-[11px] font-medium mb-1">أرباح اليوم التقديرية</div>
+        <div id="card-stat-profit" class="theme-card border p-3 rounded-2xl relative overflow-hidden">
+          <div class="text-xs opacity-75 font-medium mb-1">أرباح اليوم التقديرية</div>
           <div id="stat-today-profit" class="text-base font-extrabold text-cyan-400">0.00 ج.م</div>
           <i data-lucide="coins" class="w-7 h-7 text-cyan-500/10 absolute -bottom-1 left-2"></i>
         </div>
 
-        <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl relative overflow-hidden">
-          <div class="text-slate-400 text-[11px] font-medium mb-1">أوامر صيانة جارية</div>
+        <div class="theme-card border p-3 rounded-2xl relative overflow-hidden">
+          <div class="text-xs opacity-75 font-medium mb-1">أوامر صيانة جارية</div>
           <div id="stat-active-services" class="text-base font-extrabold text-amber-400">0</div>
           <i data-lucide="wrench" class="w-7 h-7 text-amber-500/10 absolute -bottom-1 left-2"></i>
         </div>
 
-        <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl relative overflow-hidden">
-          <div class="text-slate-400 text-[11px] font-medium mb-1">نواقص المخزن</div>
+        <div class="theme-card border p-3 rounded-2xl relative overflow-hidden">
+          <div class="text-xs opacity-75 font-medium mb-1">نواقص المخزن</div>
           <div id="stat-low-stock" class="text-base font-extrabold text-rose-400">0 أصناف</div>
           <i data-lucide="alert-triangle" class="w-7 h-7 text-rose-500/10 absolute -bottom-1 left-2"></i>
         </div>
@@ -107,19 +160,19 @@
         <button onclick="switchTab('pos')" class="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-500 active:scale-95 rounded-2xl text-white font-bold text-xs shadow-md shadow-blue-600/25">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> فاتورة بيع جديدة
         </button>
-        <button onclick="openAddServiceModal()" class="flex items-center justify-center gap-2 p-3 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-2xl text-slate-100 font-bold text-xs border border-slate-700">
+        <button onclick="openAddServiceModal()" class="flex items-center justify-center gap-2 p-3 theme-card hover:opacity-90 active:scale-95 rounded-2xl font-bold text-xs border">
           <i data-lucide="antenna" class="w-4 h-4 text-blue-400"></i> أمر صيانة / دش
         </button>
       </div>
 
       <!-- آخر الفواتير -->
-      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-3.5">
+      <div class="theme-card border rounded-2xl p-3.5">
         <div class="flex items-center justify-between mb-2.5">
-          <h3 class="text-xs font-bold text-slate-200">أحدث فواتير البيع</h3>
+          <h3 class="text-xs font-bold">أحدث فواتير البيع</h3>
           <span class="text-[10px] text-blue-400 cursor-pointer" onclick="switchTab('pos')">فتح الكاشير</span>
         </div>
         <div id="recent-invoices-list" class="space-y-2">
-          <div class="text-center py-5 text-xs text-slate-500">جاري تحميل الفواتير...</div>
+          <div class="text-center py-5 text-xs opacity-60">جاري تحميل الفواتير...</div>
         </div>
       </div>
     </section>
@@ -127,19 +180,19 @@
     <!-- 2. نقطة البيع والكاشير (POS) -->
     <section id="view-pos" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+        <h2 class="text-sm font-bold flex items-center gap-1.5">
           <i data-lucide="shopping-bag" class="w-4 h-4 text-emerald-400"></i> كاشير نقطة البيع
         </h2>
         <button onclick="clearCurrentCart()" class="text-[11px] text-rose-400 hover:underline">مسح السلة</button>
       </div>
 
-      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 space-y-2.5">
-        <label class="text-[11px] text-slate-300 font-bold block">اختر الصنف للإضافة للفاتورة:</label>
-        <select id="pos-select-product" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+      <div class="theme-card border rounded-2xl p-3 space-y-2.5">
+        <label class="text-[11px] font-bold block">اختر الصنف للإضافة للفاتورة:</label>
+        <select id="pos-select-product" class="w-full theme-subcard border rounded-xl p-2.5 text-xs focus:outline-none focus:border-blue-500">
           <option value="">اختر الصنف من المخزن...</option>
         </select>
         <div class="flex gap-2">
-          <input type="number" id="pos-add-qty" value="1" min="1" class="w-20 bg-slate-950 border border-slate-700 rounded-xl p-2 text-center text-xs text-white">
+          <input type="number" id="pos-add-qty" value="1" min="1" class="w-20 theme-subcard border rounded-xl p-2 text-center text-xs">
           <button onclick="addItemToCurrentInvoice()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 active:scale-95 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5">
             <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة للفاتورة
           </button>
@@ -147,25 +200,25 @@
       </div>
 
       <div id="pos-cart-items" class="space-y-2">
-        <div class="text-center py-8 text-slate-500 text-xs border border-dashed border-slate-800 rounded-2xl">
+        <div class="text-center py-8 opacity-60 text-xs border border-dashed rounded-2xl">
           لم يتم إضافة أصناف للفاتورة بعد
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
-        <div class="flex justify-between items-center text-sm font-bold pb-2 border-b border-slate-800">
-          <span class="text-slate-300">الإجمالي النهائي:</span>
+      <div class="theme-card border rounded-2xl p-3.5 space-y-2.5">
+        <div class="flex justify-between items-center text-sm font-bold pb-2 border-b">
+          <span>الإجمالي النهائي:</span>
           <span id="pos-cart-total" class="text-lg text-emerald-400 font-extrabold">0.00 ج.م</span>
         </div>
 
         <div class="grid grid-cols-2 gap-2 text-xs">
           <div>
-            <label class="text-slate-400 text-[10px] block mb-1">اسم العميل (اختياري)</label>
-            <input type="text" id="pos-customer-name" placeholder="عميل نقدي" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white">
+            <label class="opacity-75 text-[10px] block mb-1">اسم العميل (اختياري)</label>
+            <input type="text" id="pos-customer-name" placeholder="عميل نقدي" class="w-full theme-subcard border rounded-xl p-2">
           </div>
           <div>
-            <label class="text-slate-400 text-[10px] block mb-1">طريقة الدفع</label>
-            <select id="pos-payment-method" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white">
+            <label class="opacity-75 text-[10px] block mb-1">طريقة الدفع</label>
+            <select id="pos-payment-method" class="w-full theme-subcard border rounded-xl p-2">
               <option value="cash">نقداً (كاش)</option>
               <option value="wallet">محفظة (فودافون كاش)</option>
               <option value="bank">تحويل بنكي / إنستاباي</option>
@@ -174,8 +227,8 @@
         </div>
 
         <div id="pos-discount-box" class="flex items-center gap-2">
-          <label class="text-slate-400 text-[10px] whitespace-nowrap">خصم (ج.م):</label>
-          <input type="number" id="pos-discount-input" value="0" min="0" oninput="updateCartUI()" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-1.5 text-xs text-white">
+          <label class="opacity-75 text-[10px] whitespace-nowrap">خصم (ج.م):</label>
+          <input type="number" id="pos-discount-input" value="0" min="0" oninput="updateCartUI()" class="w-full theme-subcard border rounded-xl p-1.5 text-xs">
         </div>
 
         <button onclick="confirmAndSaveInvoice()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 rounded-xl font-bold text-white text-xs shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
@@ -184,14 +237,14 @@
       </div>
     </section>
 
-    <!-- 3. المخزن والمنتجات مع حذف البنود وإدارة الأقسام (Products) -->
+    <!-- 3. المخزن والمنتجات مع الصلاحيات التفصيلية (Products) -->
     <section id="view-products" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+        <h2 class="text-sm font-bold flex items-center gap-1.5">
           <i data-lucide="boxes" class="w-4 h-4 text-blue-400"></i> المخزن والمنتجات
         </h2>
         <div class="flex gap-1.5">
-          <button id="btn-manage-cats" onclick="openCategoriesModal()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-[11px] font-bold text-slate-200 flex items-center gap-1 border border-slate-700">
+          <button id="btn-manage-cats" onclick="openCategoriesModal()" class="px-2.5 py-1.5 theme-subcard hover:opacity-80 rounded-xl text-[11px] font-bold flex items-center gap-1 border">
             <i data-lucide="layers" class="w-3.5 h-3.5 text-amber-400"></i> الأقسام
           </button>
           <button id="btn-add-product" onclick="openAddProductModal()" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-[11px] font-bold text-white flex items-center gap-1 shadow-md">
@@ -200,32 +253,32 @@
         </div>
       </div>
 
-      <div id="stock-val-card" class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center text-xs">
+      <div id="stock-val-card" class="theme-card border p-3 rounded-2xl flex justify-between items-center text-xs">
         <div>
-          <span class="text-slate-400 block text-[10px]">قيمة البضاعة بسعر الشراء</span>
+          <span class="opacity-75 block text-[10px]">قيمة البضاعة بسعر الشراء</span>
           <span id="stock-cost-total" class="font-extrabold text-blue-400 text-sm">0.00 ج.م</span>
         </div>
         <div class="text-left">
-          <span class="text-slate-400 block text-[10px]">قيمة البضاعة بسعر البيع</span>
+          <span class="opacity-75 block text-[10px]">قيمة البضاعة بسعر البيع</span>
           <span id="stock-sell-total" class="font-extrabold text-emerald-400 text-sm">0.00 ج.م</span>
         </div>
       </div>
 
       <div class="relative">
-        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute right-3.5 top-3"></i>
+        <i data-lucide="search" class="w-4 h-4 opacity-50 absolute right-3.5 top-3"></i>
         <input type="text" id="search-products-input" oninput="filterProductsUI()" placeholder="ابحث باسم المنتج أو الصنف..."
-               class="w-full bg-slate-900 border border-slate-700 rounded-2xl pr-10 pl-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500">
+               class="w-full theme-card border rounded-2xl pr-10 pl-4 py-2.5 text-xs focus:outline-none focus:border-blue-500">
       </div>
 
       <div id="products-list-container" class="space-y-2">
-        <div class="text-center py-6 text-xs text-slate-500">جاري قراءة الأصناف...</div>
+        <div class="text-center py-6 text-xs opacity-60">جاري قراءة الأصناف...</div>
       </div>
     </section>
 
     <!-- 4. أوامر الصيانة والدش (Services) -->
     <section id="view-services" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+        <h2 class="text-sm font-bold flex items-center gap-1.5">
           <i data-lucide="antenna" class="w-4 h-4 text-amber-400"></i> الصيانة والدش والكاميرات
         </h2>
         <button onclick="openAddServiceModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow-md">
@@ -234,23 +287,23 @@
       </div>
 
       <div id="services-list-container" class="space-y-2">
-        <div class="text-center py-6 text-xs text-slate-500">جاري تحميل طلبات الصيانة...</div>
+        <div class="text-center py-6 text-xs opacity-60">جاري تحميل طلبات الصيانة...</div>
       </div>
     </section>
 
     <!-- 5. الخزينة والمصروفات (Cash & Expenses) -->
     <section id="view-expenses" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+        <h2 class="text-sm font-bold flex items-center gap-1.5">
           <i data-lucide="wallet" class="w-4 h-4 text-rose-400"></i> الخزينة والمصروفات
         </h2>
-        <button onclick="openAddExpenseModal()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow-md">
+        <button id="btn-add-expense" onclick="openAddExpenseModal()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow-md">
           <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i> تسجيل صرف
         </button>
       </div>
 
       <div id="expenses-list-container" class="space-y-2">
-        <div class="text-center py-6 text-xs text-slate-500">جاري قراءة المصروفات...</div>
+        <div class="text-center py-6 text-xs opacity-60">جاري قراءة المصروفات...</div>
       </div>
     </section>
 
@@ -258,10 +311,10 @@
     <section id="view-users" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-sm font-bold text-white flex items-center gap-1.5">
+          <h2 class="text-sm font-bold flex items-center gap-1.5">
             <i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i> الموظفون والصلاحيات
           </h2>
-          <p class="text-[10px] text-slate-400">التحكم في حسابات الموظفين ورموز الـ PIN</p>
+          <p class="text-[10px] opacity-75">التحكم في حسابات الموظفين وصلاحيات كل زر</p>
         </div>
         <button onclick="openAddUserModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow-md">
           <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> موظف جديد
@@ -269,35 +322,35 @@
       </div>
 
       <div id="users-list-container" class="space-y-2">
-        <div class="text-center py-6 text-xs text-slate-500">جاري جلب حسابات الموظفين...</div>
+        <div class="text-center py-6 text-xs opacity-60">جاري جلب حسابات الموظفين...</div>
       </div>
     </section>
 
   </main>
 
   <!-- ==================== شريط التنقل السفلي ==================== -->
-  <nav class="fixed bottom-0 inset-x-0 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 z-40 px-1 py-1.5 flex justify-around items-center">
+  <nav class="fixed bottom-0 inset-x-0 theme-card backdrop-blur-lg border-t z-40 px-1 py-1.5 flex justify-around items-center">
     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 py-1 px-2 text-blue-500">
       <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
       <span class="text-[9px] font-bold">الرئيسية</span>
     </button>
-    <button onclick="switchTab('pos')" id="nav-pos" class="flex flex-col items-center gap-1 py-1 px-2 text-slate-400">
+    <button onclick="switchTab('pos')" id="nav-pos" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
       <i data-lucide="shopping-cart" class="w-4 h-4"></i>
       <span class="text-[9px] font-medium">البيع POS</span>
     </button>
-    <button onclick="switchTab('products')" id="nav-products" class="flex flex-col items-center gap-1 py-1 px-2 text-slate-400">
+    <button onclick="switchTab('products')" id="nav-products" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
       <i data-lucide="package" class="w-4 h-4"></i>
       <span class="text-[9px] font-medium">المخزن</span>
     </button>
-    <button onclick="switchTab('services')" id="nav-services" class="flex flex-col items-center gap-1 py-1 px-2 text-slate-400">
+    <button onclick="switchTab('services')" id="nav-services" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
       <i data-lucide="antenna" class="w-4 h-4"></i>
       <span class="text-[9px] font-medium">الصيانة</span>
     </button>
-    <button onclick="switchTab('expenses')" id="nav-expenses" class="flex flex-col items-center gap-1 py-1 px-2 text-slate-400">
+    <button onclick="switchTab('expenses')" id="nav-expenses" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
       <i data-lucide="wallet" class="w-4 h-4"></i>
       <span class="text-[9px] font-medium">الخزينة</span>
     </button>
-    <button onclick="switchTab('users')" id="nav-users" class="flex flex-col items-center gap-1 py-1 px-2 text-slate-400">
+    <button onclick="switchTab('users')" id="nav-users" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
       <i data-lucide="users" class="w-4 h-4"></i>
       <span class="text-[9px] font-medium">الموظفين</span>
     </button>
@@ -305,72 +358,102 @@
 
   <!-- ==================== النوافذ المنبثقة (Modals) ==================== -->
 
-  <!-- 1. نافذة إدارة الأقسام (إضافة / تعديل / حذف) -->
-  <div id="modal-manage-categories" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3.5 max-h-[85vh] overflow-y-auto">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
-          <i data-lucide="layers" class="w-4 h-4 text-amber-400"></i> إدارة وتعديل الأقسام
+  <!-- نافذة اختيار الثيمات -->
+  <div id="modal-theme" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div class="theme-card border w-full max-w-sm rounded-3xl p-5 space-y-3">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold flex items-center gap-1.5">
+          <i data-lucide="palette" class="w-4 h-4 text-amber-400"></i> مظهر وثيم التطبيق
         </h3>
-        <button onclick="closeModal('modal-manage-categories')" class="text-slate-400 text-lg">✕</button>
+        <button onclick="closeModal('modal-theme')" class="opacity-60 text-lg">✕</button>
       </div>
 
-      <!-- إضافة قسم جديد -->
-      <div class="flex gap-2">
-        <input type="text" id="new-cat-name-input" placeholder="اسم القسم الجديد (مثال: مستلزمات شبكات)..." 
-               class="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
-        <button onclick="saveNewCategory()" class="px-4 py-2.5 bg-amber-600 hover:bg-amber-500 rounded-xl font-bold text-xs text-white shadow-md">
-          إضافة
+      <div class="space-y-2 pt-1">
+        <button onclick="applyTheme('default')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-slate-900 text-white">
+          <span>الكحلي الليلي (الافتراضي الفاخر)</span>
+          <span class="w-4 h-4 rounded-full bg-blue-600"></span>
         </button>
-      </div>
-
-      <!-- قائمة الأقسام الحالية مع أزرار التعديل والحذف -->
-      <div class="space-y-2 pt-2">
-        <span class="text-[10px] text-slate-400 block font-bold">الأقسام الحالية بالمحل:</span>
-        <div id="categories-list-container" class="space-y-1.5">
-          <div class="text-center py-4 text-xs text-slate-500">جاري تحميل الأقسام...</div>
-        </div>
+        <button onclick="applyTheme('emerald')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-emerald-950 text-emerald-100">
+          <span>الأخضر الزمردي (ستايل الكاشير)</span>
+          <span class="w-4 h-4 rounded-full bg-emerald-500"></span>
+        </button>
+        <button onclick="applyTheme('indigo')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-indigo-950 text-indigo-100">
+          <span>الأزرق الملكي (Indigo هادئ)</span>
+          <span class="w-4 h-4 rounded-full bg-indigo-500"></span>
+        </button>
+        <button onclick="applyTheme('oled')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-black text-white">
+          <span>أسود فحم (OLED توفير البطارية)</span>
+          <span class="w-4 h-4 rounded-full bg-slate-600"></span>
+        </button>
+        <button onclick="applyTheme('light')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-slate-100 text-slate-900">
+          <span>النهاري الفاتح (Light Mode)</span>
+          <span class="w-4 h-4 rounded-full bg-blue-500"></span>
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- 2. نافذة إضافة موظف -->
+  <!-- نافذة إضافة موظف وتحديد صلاحياته بالتفصيل -->
   <div id="modal-add-user" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-xs font-bold text-white">إضافة موظف وتحديد الصلاحيات</h3>
-        <button onclick="closeModal('modal-add-user')" class="text-slate-400 text-lg">✕</button>
+    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold">إضافة موظف وتحديد الصلاحيات الدقيقة</h3>
+        <button onclick="closeModal('modal-add-user')" class="opacity-60 text-lg">✕</button>
       </div>
 
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">اسم الموظف بالكامل</label>
-        <input type="text" id="new-user-fullname" placeholder="مثال: أحمد محمود" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+        <label class="opacity-75 text-[10px] block mb-1">اسم الموظف بالكامل</label>
+        <input type="text" id="new-user-fullname" placeholder="مثال: أحمد محمود" class="w-full theme-subcard border rounded-xl p-2.5 text-xs">
       </div>
 
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">اسم المستخدم</label>
-          <input type="text" id="new-user-username" placeholder="ahmed" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">اسم المستخدم</label>
+          <input type="text" id="new-user-username" placeholder="ahmed" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">رمز الدخول (PIN)</label>
-          <input type="text" id="new-user-pin" placeholder="5555" maxlength="6" inputmode="numeric" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">رمز الدخول (PIN)</label>
+          <input type="text" id="new-user-pin" placeholder="5555" maxlength="6" inputmode="numeric" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
       </div>
 
-      <div class="pt-2 border-t border-slate-800 space-y-2">
-        <span class="text-[11px] font-bold text-slate-200 block mb-1">صلاحيات هذا الموظف:</span>
-        <label class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-xl text-xs cursor-pointer">
+      <!-- تفصيل الصلاحيات بالمربعات -->
+      <div class="pt-2 border-t space-y-2">
+        <span class="text-[11px] font-bold block mb-1">صلاحيات هذا الموظف (حدد ما تسمح به):</span>
+        
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="perm-add-prod" class="w-4 h-4 rounded text-blue-600">
+          <span>إضافة أصناف جديدة للمخزن</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="perm-edit-prod" class="w-4 h-4 rounded text-blue-600">
+          <span>تعديل بيانات وأسعار الأصناف الحالية</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="perm-del-prod" class="w-4 h-4 rounded text-rose-600">
+          <span class="text-rose-400 font-bold">حذف الأصناف نهائياً من المخزن</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="perm-cats" class="w-4 h-4 rounded text-blue-600">
+          <span>إدارة وتعديل أقسام المحل</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-reports" class="w-4 h-4 rounded text-blue-600">
           <span>مشاهدة الأرباح وأسعار التكلفة</span>
         </label>
-        <label class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="perm-inventory" class="w-4 h-4 rounded text-blue-600">
-          <span>إضافة وتعديل وحذف أصناف المخزن</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-xl text-xs cursor-pointer">
+
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-discounts" class="w-4 h-4 rounded text-blue-600">
           <span>السماح بخصومات في الفواتير</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="perm-expenses" class="w-4 h-4 rounded text-blue-600">
+          <span>تسجيل وصرف مبالغ من الخزينة</span>
         </label>
       </div>
 
@@ -380,67 +463,132 @@
     </div>
   </div>
 
-  <!-- 3. نافذة إضافة منتج -->
+  <!-- نافذة تعديل بيانات صنف موجود -->
+  <div id="modal-edit-product" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
+    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold">تعديل بيانات الصنف</h3>
+        <button onclick="closeModal('modal-edit-product')" class="opacity-60 text-lg">✕</button>
+      </div>
+      <input type="hidden" id="edit-prod-id">
+      <div>
+        <label class="opacity-75 text-[10px] block mb-1">اسم الصنف</label>
+        <input type="text" id="edit-prod-name" class="w-full theme-subcard border rounded-xl p-2.5 text-xs">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="opacity-75 text-[10px] block mb-1">سعر الشراء (التكلفة)</label>
+          <input type="number" id="edit-prod-cost" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+        </div>
+        <div>
+          <label class="opacity-75 text-[10px] block mb-1">سعر البيع</label>
+          <input type="number" id="edit-prod-price" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="opacity-75 text-[10px] block mb-1">الكمية الحالية</label>
+          <input type="number" id="edit-prod-stock" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+        </div>
+        <div>
+          <label class="opacity-75 text-[10px] block mb-1">تنبيه النواقص عند</label>
+          <input type="number" id="edit-prod-alert" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+        </div>
+      </div>
+      <div>
+        <label class="opacity-75 text-[10px] block mb-1">القسم</label>
+        <select id="edit-prod-cat" class="w-full theme-subcard border rounded-xl p-2 text-xs"></select>
+      </div>
+      <button onclick="saveEditProduct()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-xs text-white">تحديث بيانات الصنف</button>
+    </div>
+  </div>
+
+  <!-- نافذة إدارة الأقسام -->
+  <div id="modal-manage-categories" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
+    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3.5 max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold flex items-center gap-1.5">
+          <i data-lucide="layers" class="w-4 h-4 text-amber-400"></i> إدارة وتعديل الأقسام
+        </h3>
+        <button onclick="closeModal('modal-manage-categories')" class="opacity-60 text-lg">✕</button>
+      </div>
+
+      <div class="flex gap-2">
+        <input type="text" id="new-cat-name-input" placeholder="اسم القسم الجديد..." 
+               class="flex-1 theme-subcard border rounded-xl p-2.5 text-xs focus:outline-none focus:border-blue-500">
+        <button onclick="saveNewCategory()" class="px-4 py-2.5 bg-amber-600 hover:bg-amber-500 rounded-xl font-bold text-xs text-white shadow-md">
+          إضافة
+        </button>
+      </div>
+
+      <div class="space-y-2 pt-2">
+        <span class="text-[10px] opacity-75 block font-bold">الأقسام الحالية بالمحل:</span>
+        <div id="categories-list-container" class="space-y-1.5">
+          <div class="text-center py-4 text-xs opacity-60">جاري تحميل الأقسام...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة إضافة منتج -->
   <div id="modal-add-product" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-xs font-bold text-white">إضافة صنف جديد للمخزن</h3>
-        <button onclick="closeModal('modal-add-product')" class="text-slate-400 text-lg">✕</button>
+    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold">إضافة صنف جديد للمخزن</h3>
+        <button onclick="closeModal('modal-add-product')" class="opacity-60 text-lg">✕</button>
       </div>
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">اسم الصنف</label>
-        <input type="text" id="new-prod-name" placeholder="مثال: رسيفر استرا HD" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+        <label class="opacity-75 text-[10px] block mb-1">اسم الصنف</label>
+        <input type="text" id="new-prod-name" placeholder="مثال: رسيفر استرا HD" class="w-full theme-subcard border rounded-xl p-2.5 text-xs">
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">سعر الشراء (التكلفة)</label>
-          <input type="number" id="new-prod-cost" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">سعر الشراء (التكلفة)</label>
+          <input type="number" id="new-prod-cost" placeholder="0" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">سعر البيع</label>
-          <input type="number" id="new-prod-price" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">سعر البيع</label>
+          <input type="number" id="new-prod-price" placeholder="0" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">الكمية</label>
-          <input type="number" id="new-prod-stock" value="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">الكمية</label>
+          <input type="number" id="new-prod-stock" value="1" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">تنبيه النواقص عند</label>
-          <input type="number" id="new-prod-alert" value="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">تنبيه النواقص عند</label>
+          <input type="number" id="new-prod-alert" value="2" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
       </div>
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">القسم</label>
-        <select id="new-prod-cat" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
-          <!-- يتم ملؤه تلقائياً من الأقسام المسجلة في السيرفر -->
-        </select>
+        <label class="opacity-75 text-[10px] block mb-1">القسم</label>
+        <select id="new-prod-cat" class="w-full theme-subcard border rounded-xl p-2 text-xs"></select>
       </div>
       <button onclick="saveNewProduct()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white mt-1">حفظ الصنف في المخزن</button>
     </div>
   </div>
 
-  <!-- 4. نافذة طلب صيانة -->
+  <!-- نافذة طلب صيانة -->
   <div id="modal-add-service" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-xs font-bold text-white">تسجيل أمر تركيب / صيانة</h3>
-        <button onclick="closeModal('modal-add-service')" class="text-slate-400 text-lg">✕</button>
+    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold">تسجيل أمر تركيب / صيانة</h3>
+        <button onclick="closeModal('modal-add-service')" class="opacity-60 text-lg">✕</button>
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">اسم العميل</label>
-          <input type="text" id="srv-cust-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">اسم العميل</label>
+          <input type="text" id="srv-cust-name" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">رقم الهاتف</label>
-          <input type="tel" id="srv-cust-phone" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">رقم الهاتف</label>
+          <input type="tel" id="srv-cust-phone" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
       </div>
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">نوع الخدمة</label>
-        <select id="srv-type" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        <label class="opacity-75 text-[10px] block mb-1">نوع الخدمة</label>
+        <select id="srv-type" class="w-full theme-subcard border rounded-xl p-2 text-xs">
           <option>تركيب وضبط طبق دش</option>
           <option>صيانة وتنزيل قنوات رسيفر</option>
           <option>تركيب وصيانة كاميرات مراقبة</option>
@@ -449,33 +597,33 @@
         </select>
       </div>
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">العنوان والملاحظات</label>
-        <input type="text" id="srv-address" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        <label class="opacity-75 text-[10px] block mb-1">العنوان والملاحظات</label>
+        <input type="text" id="srv-address" class="w-full theme-subcard border rounded-xl p-2 text-xs">
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">المبلغ المطلوب</label>
-          <input type="number" id="srv-charge" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">المبلغ المطلوب</label>
+          <input type="number" id="srv-charge" placeholder="0" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 block mb-1">اسم الفني</label>
-          <input type="text" id="srv-tech" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="opacity-75 text-[10px] block mb-1">اسم الفني</label>
+          <input type="text" id="srv-tech" class="w-full theme-subcard border rounded-xl p-2 text-xs">
         </div>
       </div>
       <button onclick="saveNewServiceOrder()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white">تسجيل أمر الصيانة</button>
     </div>
   </div>
 
-  <!-- 5. نافذة تسجيل مصروف -->
+  <!-- نافذة تسجيل مصروف -->
   <div id="modal-add-expense" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-5 space-y-3">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-        <h3 class="text-xs font-bold text-white">تسجيل مصروف من الخزينة</h3>
-        <button onclick="closeModal('modal-add-expense')" class="text-slate-400 text-lg">✕</button>
+    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold">تسجيل مصروف من الخزينة</h3>
+        <button onclick="closeModal('modal-add-expense')" class="opacity-60 text-lg">✕</button>
       </div>
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">بند المصروف</label>
-        <select id="exp-category" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        <label class="opacity-75 text-[10px] block mb-1">بند المصروف</label>
+        <select id="exp-category" class="w-full theme-subcard border rounded-xl p-2 text-xs">
           <option>كهرباء ومرافق</option>
           <option>إيجار المحل</option>
           <option>أدوات ومستهلكات تركيب</option>
@@ -485,18 +633,18 @@
         </select>
       </div>
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">المبلغ (ج.م)</label>
-        <input type="number" id="exp-amount" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        <label class="opacity-75 text-[10px] block mb-1">المبلغ (ج.م)</label>
+        <input type="number" id="exp-amount" placeholder="0" class="w-full theme-subcard border rounded-xl p-2 text-xs">
       </div>
       <div>
-        <label class="text-[10px] text-slate-400 block mb-1">بيان / ملاحظات</label>
-        <input type="text" id="exp-notes" placeholder="ملاحظات..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+        <label class="opacity-75 text-[10px] block mb-1">بيان / ملاحظات</label>
+        <input type="text" id="exp-notes" placeholder="ملاحظات..." class="w-full theme-subcard border rounded-xl p-2 text-xs">
       </div>
       <button onclick="saveNewExpense()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 rounded-xl font-bold text-xs text-white">تأكيد خصم المصروف</button>
     </div>
   </div>
 
-  <!-- ==================== كود الجافاسكربت ==================== -->
+  <!-- ==================== كود الجافاسكربت والاتصال ==================== -->
   <script>
     const SUPABASE_URL = "https://mvzrkiqypxnfrxnocole.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12enJraXF5cHhuZnJ4bm9jb2xlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyMzUwMjcsImV4cCI6MjEwNzgxMTAyN30.b8B-JsyqJnCjx7gNsLOtPbLWnx4SpBKMBf06nRSxQT8";
@@ -511,7 +659,25 @@
     let allCategories = [];
     let currentCart = [];
 
-    // تسجيل الدخول مع دعم رمز المدير 1896
+    // نظام الثيمات
+    function initTheme() {
+      const saved = localStorage.getItem('shop-theme') || 'default';
+      applyTheme(saved);
+    }
+
+    function applyTheme(themeName) {
+      if (themeName === 'default') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', themeName);
+      }
+      localStorage.setItem('shop-theme', themeName);
+      closeModal('modal-theme');
+    }
+
+    function openThemeModal() { document.getElementById('modal-theme').classList.remove('hidden'); }
+
+    // تسجيل الدخول
     async function handleLogin() {
       const pin = document.getElementById('login-pin').value.trim();
       const err = document.getElementById('login-error');
@@ -526,8 +692,12 @@
             full_name: 'صاحب المحل (المدير العام)',
             role: 'owner',
             can_view_reports: true,
-            can_manage_inventory: true,
+            can_add_product: true,
+            can_edit_product: true,
+            can_delete_product: true,
+            can_manage_categories: true,
             can_give_discounts: true,
+            can_manage_expenses: true,
             is_active: true
           }).select().single();
           data = newUser;
@@ -542,8 +712,12 @@
           full_name: 'صاحب المحل',
           role: 'owner',
           can_view_reports: true,
-          can_manage_inventory: true,
-          can_give_discounts: true
+          can_add_product: true,
+          can_edit_product: true,
+          can_delete_product: true,
+          can_manage_categories: true,
+          can_give_discounts: true,
+          can_manage_expenses: true
         };
 
         applyUserPermissions(currentUser);
@@ -554,7 +728,6 @@
         return;
       }
 
-      // التحقق من حساب الموظف
       const { data, error } = await db.from('app_users').select('*').eq('pin', pin).eq('is_active', true).maybeSingle();
 
       if (data && !error) {
@@ -575,14 +748,17 @@
 
       const isOwner = user.role === 'owner';
       const canReports = isOwner || user.can_view_reports;
-      const canInventory = isOwner || user.can_manage_inventory;
+      const canAddProd = isOwner || user.can_add_product;
+      const canCats = isOwner || user.can_manage_categories;
       const canDiscounts = isOwner || user.can_give_discounts;
+      const canExpenses = isOwner || user.can_manage_expenses;
 
       document.getElementById('card-stat-profit').style.display = canReports ? 'block' : 'none';
       document.getElementById('stock-val-card').style.display = canReports ? 'flex' : 'none';
-      document.getElementById('btn-add-product').style.display = canInventory ? 'flex' : 'none';
-      document.getElementById('btn-manage-cats').style.display = canInventory ? 'flex' : 'none';
+      document.getElementById('btn-add-product').style.display = canAddProd ? 'flex' : 'none';
+      document.getElementById('btn-manage-cats').style.display = canCats ? 'flex' : 'none';
       document.getElementById('pos-discount-box').style.display = canDiscounts ? 'flex' : 'none';
+      document.getElementById('btn-add-expense').style.display = canExpenses ? 'flex' : 'none';
       document.getElementById('nav-users').style.display = isOwner ? 'flex' : 'none';
     }
 
@@ -604,7 +780,7 @@
         if (v) v.classList.add('hidden');
         if (n) {
           n.classList.remove('text-blue-500');
-          n.classList.add('text-slate-400');
+          n.classList.add('opacity-60');
         }
       });
 
@@ -612,7 +788,7 @@
       const activeNav = document.getElementById(`nav-${tabId}`);
       if (activeView) activeView.classList.remove('hidden');
       if (activeNav) {
-        activeNav.classList.remove('text-slate-400');
+        activeNav.classList.remove('opacity-60');
         activeNav.classList.add('text-blue-500');
       }
 
@@ -654,30 +830,30 @@
       const list = document.getElementById('recent-invoices-list');
       if (recent && recent.length > 0) {
         list.innerHTML = recent.map(inv => `
-          <div class="flex items-center justify-between p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/50 text-xs">
+          <div class="flex items-center justify-between p-2.5 theme-subcard rounded-xl border text-xs">
             <div>
-              <span class="font-bold text-white">فاتورة #${inv.invoice_number || '---'}</span>
-              <span class="text-slate-400 block text-[10px]">${inv.customer_name || 'نقدي'}</span>
+              <span class="font-bold">فاتورة #${inv.invoice_number || '---'}</span>
+              <span class="opacity-75 block text-[10px]">${inv.customer_name || 'نقدي'}</span>
             </div>
             <div class="text-left">
               <span class="font-bold text-emerald-400 block">${Number(inv.final_total).toFixed(2)} ج.م</span>
-              <span class="text-[9px] text-slate-400">${inv.payment_method === 'cash' ? 'كاش' : 'محفظة/تحويل'}</span>
+              <span class="text-[9px] opacity-60">${inv.payment_method === 'cash' ? 'كاش' : 'محفظة/تحويل'}</span>
             </div>
           </div>
         `).join('');
       } else {
-        list.innerHTML = '<div class="text-center py-4 text-xs text-slate-500">لا توجد مبيعات مسجلة اليوم</div>';
+        list.innerHTML = '<div class="text-center py-4 text-xs opacity-60">لا توجد مبيعات مسجلة اليوم</div>';
       }
     }
 
-    // 2. إدارة الأقسام (Categories)
+    // 2. إدارة الأقسام
     async function loadCategories() {
       if (!db) return;
       const { data } = await db.from('categories').select('*').order('name', { ascending: true });
       if (data) {
         allCategories = data;
         renderCategories(data);
-        populateCategorySelect(data);
+        populateCategorySelects(data);
       }
     }
 
@@ -685,45 +861,48 @@
       const container = document.getElementById('categories-list-container');
       if (!container) return;
       if (!items || items.length === 0) {
-        container.innerHTML = '<div class="text-center py-3 text-xs text-slate-500">لا توجد أقسام مسجلة</div>';
+        container.innerHTML = '<div class="text-center py-3 text-xs opacity-60">لا توجد أقسام مسجلة</div>';
         return;
       }
 
+      const canCats = currentUser?.role === 'owner' || currentUser?.can_manage_categories;
+
       container.innerHTML = items.map(cat => `
-        <div class="flex items-center justify-between p-2 bg-slate-800 border border-slate-700 rounded-xl text-xs">
-          <span class="font-bold text-slate-200">${cat.name}</span>
-          <div class="flex items-center gap-1">
-            <button onclick="editCategory('${cat.id}', '${cat.name}')" class="p-1.5 text-blue-400 hover:bg-slate-700 rounded-lg" title="تعديل">
-              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-            </button>
-            <button onclick="deleteCategory('${cat.id}', '${cat.name}')" class="p-1.5 text-rose-400 hover:bg-slate-700 rounded-lg" title="حذف">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
+        <div class="flex items-center justify-between p-2 theme-subcard border rounded-xl text-xs">
+          <span class="font-bold">${cat.name}</span>
+          ${canCats ? `
+            <div class="flex items-center gap-1">
+              <button onclick="editCategory('${cat.id}', '${cat.name}')" class="p-1.5 text-blue-400 hover:opacity-80 rounded-lg" title="تعديل">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="deleteCategory('${cat.id}', '${cat.name}')" class="p-1.5 text-rose-400 hover:opacity-80 rounded-lg" title="حذف">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          ` : ''}
         </div>
       `).join('');
 
       try { lucide.createIcons(); } catch(e){}
     }
 
-    function populateCategorySelect(items) {
-      const select = document.getElementById('new-prod-cat');
-      if (!select) return;
-      select.innerHTML = items.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    function populateCategorySelects(items) {
+      const selects = [document.getElementById('new-prod-cat'), document.getElementById('edit-prod-cat')];
+      selects.forEach(select => {
+        if (!select) return;
+        select.innerHTML = items.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+      });
     }
 
     async function saveNewCategory() {
       const name = document.getElementById('new-cat-name-input').value.trim();
-      if (!name) {
-        alert('يرجى كتابة اسم القسم');
-        return;
-      }
+      if (!name) return alert('يرجى كتابة اسم القسم');
       const { error } = await db.from('categories').insert([{ name }]);
       if (!error) {
         document.getElementById('new-cat-name-input').value = '';
         loadCategories();
       } else {
-        alert('حدث خطأ أو اسم القسم مسجل من قبل');
+        alert('حدث خطأ أو اسم القسم مسجل مسبقاً');
       }
     }
 
@@ -742,7 +921,7 @@
       loadCategories();
     }
 
-    // 3. إدارة المخزن والمنتجات مع الحذف
+    // 3. إدارة المخزن والمنتجات مع الصلاحيات التفصيلية
     async function loadProducts() {
       if (!db) return;
       const { data } = await db.from('products').select('*').order('created_at', { ascending: false });
@@ -756,30 +935,42 @@
     function renderProducts(items) {
       const container = document.getElementById('products-list-container');
       if (!items || items.length === 0) {
-        container.innerHTML = '<div class="text-center py-8 text-xs text-slate-500">المخزن فارغ، أضف أول صنف!</div>';
+        container.innerHTML = '<div class="text-center py-8 text-xs opacity-60">المخزن فارغ، أضف أول صنف!</div>';
         return;
       }
-      const canSeeCost = currentUser?.role === 'owner' || currentUser?.can_view_reports;
-      const canManage = currentUser?.role === 'owner' || currentUser?.can_manage_inventory;
+
+      const isOwner = currentUser?.role === 'owner';
+      const canSeeCost = isOwner || currentUser?.can_view_reports;
+      const canEdit = isOwner || currentUser?.can_edit_product;
+      const canDelete = isOwner || currentUser?.can_delete_product;
 
       container.innerHTML = items.map(p => `
-        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 flex items-center justify-between">
+        <div class="theme-card border rounded-2xl p-3 flex items-center justify-between">
           <div class="flex-1 pl-2">
             <div class="flex items-center gap-1.5">
-              <span class="text-xs font-bold text-white">${p.name}</span>
+              <span class="text-xs font-bold">${p.name}</span>
               ${p.stock_quantity <= p.min_stock_alert ? '<span class="px-1.5 py-0.2 bg-rose-500/20 text-rose-400 text-[9px] rounded font-bold">ناقص</span>' : ''}
             </div>
-            <div class="text-[10px] text-slate-400 mt-0.5">${p.category} ${canSeeCost ? `| تكلفة: ${p.cost_price} ج.م` : ''}</div>
+            <div class="text-[10px] opacity-75 mt-0.5">${p.category} ${canSeeCost ? `| تكلفة: ${p.cost_price} ج.م` : ''}</div>
           </div>
           
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <div class="text-left">
               <span class="text-xs font-extrabold text-blue-400 block">${p.selling_price} ج.م</span>
-              <span class="text-[10px] text-slate-300">مخزون: <strong class="text-white">${p.stock_quantity}</strong></span>
+              <span class="text-[10px] opacity-75">مخزون: <strong>${p.stock_quantity}</strong></span>
             </div>
-            ${canManage ? `
-              <button onclick="deleteProduct('${p.id}', '${p.name}')" class="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition" title="حذف الصنف">
-                <i data-lucide="trash-2" class="w-4 h-4 text-rose-400"></i>
+
+            <!-- زر التعديل (يظهر لمن لديه الصلاحية فقط) -->
+            ${canEdit ? `
+              <button onclick="openEditProductModal('${p.id}')" class="p-2 text-blue-400 hover:opacity-80 rounded-xl" title="تعديل الصنف">
+                <i data-lucide="edit" class="w-4 h-4"></i>
+              </button>
+            ` : ''}
+
+            <!-- زر الحذف (يظهر لمن لديه الصلاحية فقط) -->
+            ${canDelete ? `
+              <button onclick="deleteProduct('${p.id}', '${p.name}')" class="p-2 text-rose-400 hover:opacity-80 rounded-xl" title="حذف الصنف">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             ` : ''}
           </div>
@@ -787,6 +978,43 @@
       `).join('');
 
       try { lucide.createIcons(); } catch(e){}
+    }
+
+    function openEditProductModal(id) {
+      const p = allProducts.find(item => item.id === id);
+      if (!p) return;
+      document.getElementById('edit-prod-id').value = p.id;
+      document.getElementById('edit-prod-name').value = p.name;
+      document.getElementById('edit-prod-cost').value = p.cost_price;
+      document.getElementById('edit-prod-price').value = p.selling_price;
+      document.getElementById('edit-prod-stock').value = p.stock_quantity;
+      document.getElementById('edit-prod-alert').value = p.min_stock_alert;
+      document.getElementById('edit-prod-cat').value = p.category;
+      document.getElementById('modal-edit-product').classList.remove('hidden');
+    }
+
+    async function saveEditProduct() {
+      const id = document.getElementById('edit-prod-id').value;
+      const name = document.getElementById('edit-prod-name').value.trim();
+      const cost = parseFloat(document.getElementById('edit-prod-cost').value) || 0;
+      const price = parseFloat(document.getElementById('edit-prod-price').value) || 0;
+      const stock = parseInt(document.getElementById('edit-prod-stock').value) || 0;
+      const alertQty = parseInt(document.getElementById('edit-prod-alert').value) || 2;
+      const cat = document.getElementById('edit-prod-cat').value;
+
+      if (!name || price <= 0) return alert('يرجى إدخال اسم الصنف وسعر البيع بشكل صحيح');
+
+      const { error } = await db.from('products').update({
+        name, cost_price: cost, selling_price: price, stock_quantity: stock, min_stock_alert: alertQty, category: cat
+      }).eq('id', id);
+
+      if (!error) {
+        closeModal('modal-edit-product');
+        loadProducts();
+        loadDashboardData();
+      } else {
+        alert('حدث خطأ أثناء حفظ التعديلات');
+      }
     }
 
     async function deleteProduct(id, name) {
@@ -820,10 +1048,7 @@
       const alertQty = parseInt(document.getElementById('new-prod-alert').value) || 2;
       const cat = document.getElementById('new-prod-cat').value;
 
-      if (!name || price <= 0) {
-        alert('يرجى إدخال اسم الصنف وسعر البيع بشكل صحيح');
-        return;
-      }
+      if (!name || price <= 0) return alert('يرجى إدخال اسم الصنف وسعر البيع');
 
       await db.from('products').insert([{
         name, cost_price: cost, selling_price: price, stock_quantity: stock, min_stock_alert: alertQty, category: cat
@@ -843,10 +1068,7 @@
       const prod = allProducts.find(p => p.id === prodId);
       if (!prod) return;
 
-      if (prod.stock_quantity < qty) {
-        alert(`الكمية المتوفرة في المخزن (${prod.stock_quantity}) أقل من المطلوب!`);
-        return;
-      }
+      if (prod.stock_quantity < qty) return alert(`الكمية المتوفرة (${prod.stock_quantity}) أقل من المطلوب!`);
 
       const exist = currentCart.find(i => i.product_id === prodId);
       if (exist) {
@@ -860,14 +1082,13 @@
           quantity: qty
         });
       }
-
       updateCartUI();
     }
 
     function updateCartUI() {
       const container = document.getElementById('pos-cart-items');
       if (currentCart.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-slate-500 text-xs border border-dashed border-slate-800 rounded-2xl">لم يتم إضافة أصناف بعد</div>';
+        container.innerHTML = '<div class="text-center py-6 opacity-60 text-xs border border-dashed rounded-2xl">لم يتم إضافة أصناف بعد</div>';
         document.getElementById('pos-cart-total').innerText = '0.00 ج.م';
         return;
       }
@@ -877,14 +1098,14 @@
         const itemTotal = item.unit_price * item.quantity;
         subtotal += itemTotal;
         return `
-          <div class="flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs">
+          <div class="flex items-center justify-between p-2.5 theme-subcard border rounded-xl text-xs">
             <div>
-              <span class="font-bold text-white block">${item.product_name}</span>
-              <span class="text-slate-400 text-[10px]">${item.quantity} × ${item.unit_price} ج.م</span>
+              <span class="font-bold block">${item.product_name}</span>
+              <span class="opacity-75 text-[10px]">${item.quantity} × ${item.unit_price} ج.م</span>
             </div>
             <div class="flex items-center gap-2">
               <span class="font-extrabold text-emerald-400">${itemTotal.toFixed(2)} ج.م</span>
-              <button onclick="removeCartItem(${idx})" class="p-1 text-rose-400 hover:bg-rose-500/20 rounded">✕</button>
+              <button onclick="removeCartItem(${idx})" class="p-1 text-rose-400 hover:opacity-80">✕</button>
             </div>
           </div>
         `;
@@ -906,10 +1127,7 @@
     }
 
     async function confirmAndSaveInvoice() {
-      if (currentCart.length === 0) {
-        alert('سلة الفاتورة فارغة!');
-        return;
-      }
+      if (currentCart.length === 0) return alert('سلة الفاتورة فارغة!');
 
       let subtotal = currentCart.reduce((a, b) => a + (b.unit_price * b.quantity), 0);
       const discount = parseFloat(document.getElementById('pos-discount-input').value) || 0;
@@ -955,32 +1173,33 @@
       }
     }
 
-    // 5. إدارة الموظفين
+    // 5. إدارة الموظفين والصلاحيات
     async function loadUsers() {
       if (currentUser?.role !== 'owner') return;
       const { data } = await db.from('app_users').select('*').order('created_at', { ascending: true });
       const container = document.getElementById('users-list-container');
       if (!data || data.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500">لا يوجد موظفون مضافون</div>';
+        container.innerHTML = '<div class="text-center py-6 text-xs opacity-60">لا يوجد موظفون مضافون</div>';
         return;
       }
 
       container.innerHTML = data.map(u => `
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between text-xs">
+        <div class="theme-card border rounded-2xl p-3 flex items-center justify-between text-xs">
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-bold text-white">${u.full_name}</span>
+              <span class="font-bold">${u.full_name}</span>
               <span class="text-[9px] px-1.5 py-0.5 rounded font-bold ${u.role === 'owner' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}">${u.role === 'owner' ? 'صاحب المحل' : 'موظف'}</span>
             </div>
-            <div class="text-[10px] text-slate-400 mt-1">اسم المستخدم: ${u.username} | الـ PIN: <strong class="text-slate-200">${u.pin}</strong></div>
-            <div class="text-[9px] text-slate-500 mt-0.5">
+            <div class="text-[10px] opacity-75 mt-1">اسم المستخدم: ${u.username} | الـ PIN: <strong>${u.pin}</strong></div>
+            <div class="text-[9px] opacity-60 mt-0.5">
+              ${u.can_add_product ? '✔ إضافة صنف ' : ''}
+              ${u.can_edit_product ? '✔ تعديل ' : ''}
+              ${u.can_delete_product ? '✔ حذف ' : ''}
               ${u.can_view_reports ? '✔ أرباح ' : ''}
-              ${u.can_manage_inventory ? '✔ مخزن ' : ''}
-              ${u.can_give_discounts ? '✔ خصومات' : ''}
             </div>
           </div>
           ${u.role !== 'owner' ? `
-            <button onclick="deleteUser('${u.id}')" class="p-2 text-rose-400 hover:bg-rose-500/20 rounded-xl" title="حذف">
+            <button onclick="deleteUser('${u.id}')" class="p-2 text-rose-400 hover:opacity-80" title="حذف">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
           ` : ''}
@@ -995,23 +1214,28 @@
       const user = document.getElementById('new-user-username').value.trim().toLowerCase();
       const pin = document.getElementById('new-user-pin').value.trim();
 
-      if (!name || !user || !pin) {
-        alert('يرجى ملء جميع بيانات الموظف والـ PIN');
-        return;
-      }
+      if (!name || !user || !pin) return alert('يرجى ملء جميع بيانات الموظف والـ PIN');
 
+      const addP = document.getElementById('perm-add-prod').checked;
+      const editP = document.getElementById('perm-edit-prod').checked;
+      const delP = document.getElementById('perm-del-prod').checked;
+      const catsP = document.getElementById('perm-cats').checked;
       const rep = document.getElementById('perm-reports').checked;
-      const inv = document.getElementById('perm-inventory').checked;
       const disc = document.getElementById('perm-discounts').checked;
+      const expP = document.getElementById('perm-expenses').checked;
 
       const { error } = await db.from('app_users').insert([{
         full_name: name,
         username: user,
         pin: pin,
         role: 'employee',
+        can_add_product: addP,
+        can_edit_product: editP,
+        can_delete_product: delP,
+        can_manage_categories: catsP,
         can_view_reports: rep,
-        can_manage_inventory: inv,
         can_give_discounts: disc,
+        can_manage_expenses: expP,
         is_active: true
       }]);
 
@@ -1037,18 +1261,18 @@
       const { data } = await db.from('service_orders').select('*').order('created_at', { ascending: false });
       const container = document.getElementById('services-list-container');
       if (!data || data.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500">لا توجد طلبات صيانة حالية</div>';
+        container.innerHTML = '<div class="text-center py-6 text-xs opacity-60">لا توجد طلبات صيانة حالية</div>';
         return;
       }
       container.innerHTML = data.map(s => `
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 text-xs space-y-1">
-          <div class="flex justify-between items-center font-bold text-white">
+        <div class="theme-card border rounded-2xl p-3 text-xs space-y-1">
+          <div class="flex justify-between items-center font-bold">
             <span>${s.customer_name} (${s.customer_phone})</span>
             <span class="text-amber-400 font-extrabold">${s.customer_charge} ج.م</span>
           </div>
           <div class="text-[11px] text-blue-400">${s.service_type}</div>
-          <div class="text-[10px] text-slate-400">${s.address_notes || 'بدون عنوان'}</div>
-          <div class="text-[10px] text-slate-500 flex justify-between pt-1 border-t border-slate-800/80">
+          <div class="text-[10px] opacity-75">${s.address_notes || 'بدون عنوان'}</div>
+          <div class="text-[10px] opacity-60 flex justify-between pt-1 border-t">
             <span>الفني: ${s.technician_name || 'غير محدد'}</span>
             <span class="text-emerald-400 font-bold">${s.status === 'completed' ? 'مكتمل' : 'قيد التنفيذ'}</span>
           </div>
@@ -1064,10 +1288,7 @@
       const charge = parseFloat(document.getElementById('srv-charge').value) || 0;
       const tech = document.getElementById('srv-tech').value.trim();
 
-      if (!name || !phone) {
-        alert('يرجى إدخال اسم العميل ورقم هاتفه');
-        return;
-      }
+      if (!name || !phone) return alert('يرجى إدخال اسم العميل ورقم هاتفه');
 
       await db.from('service_orders').insert([{
         customer_name: name, customer_phone: phone, service_type: type, address_notes: addr, customer_charge: charge, technician_name: tech
@@ -1082,14 +1303,14 @@
       const { data } = await db.from('expenses').select('*').order('created_at', { ascending: false });
       const container = document.getElementById('expenses-list-container');
       if (!data || data.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500">لا توجد مصروفات مسجلة</div>';
+        container.innerHTML = '<div class="text-center py-6 text-xs opacity-60">لا توجد مصروفات مسجلة</div>';
         return;
       }
       container.innerHTML = data.map(e => `
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex justify-between items-center text-xs">
+        <div class="theme-card border rounded-2xl p-3 flex justify-between items-center text-xs">
           <div>
-            <span class="font-bold text-white block">${e.category}</span>
-            <span class="text-[10px] text-slate-400">${e.notes || 'بدون بيان'}</span>
+            <span class="font-bold block">${e.category}</span>
+            <span class="text-[10px] opacity-75">${e.notes || 'بدون بيان'}</span>
           </div>
           <span class="font-extrabold text-rose-400">${Number(e.amount).toFixed(2)} ج.م</span>
         </div>
@@ -1101,10 +1322,7 @@
       const amt = parseFloat(document.getElementById('exp-amount').value) || 0;
       const notes = document.getElementById('exp-notes').value.trim();
 
-      if (amt <= 0) {
-        alert('يرجى إدخال مبلغ الصرف');
-        return;
-      }
+      if (amt <= 0) return alert('يرجى إدخال مبلغ الصرف');
 
       await db.from('expenses').insert([{
         category: cat, amount: amt, notes: notes, created_by: currentUser.full_name
@@ -1114,7 +1332,7 @@
       loadExpenses();
     }
 
-    // فتح وإغلاق النوافذ
+    // نوافذ
     function openAddProductModal() { document.getElementById('modal-add-product').classList.remove('hidden'); }
     function openCategoriesModal() { document.getElementById('modal-manage-categories').classList.remove('hidden'); }
     function openAddServiceModal() { document.getElementById('modal-add-service').classList.remove('hidden'); }
@@ -1122,6 +1340,8 @@
     function openAddUserModal() { document.getElementById('modal-add-user').classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+    // بدء التشغيل
+    initTheme();
     try { lucide.createIcons(); } catch(e){}
   </script>
 </body>
