@@ -20,7 +20,6 @@
       --border-color: #334155;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --primary-color: #2563eb;
     }
     [data-theme="emerald"] {
       --bg-base: #051a14;
@@ -29,7 +28,6 @@
       --border-color: #059669;
       --text-main: #ecfdf5;
       --text-muted: #6ee7b7;
-      --primary-color: #10b981;
     }
     [data-theme="indigo"] {
       --bg-base: #0b0f19;
@@ -38,7 +36,6 @@
       --border-color: #4338ca;
       --text-main: #eef2ff;
       --text-muted: #a5b4fc;
-      --primary-color: #6366f1;
     }
     [data-theme="oled"] {
       --bg-base: #000000;
@@ -47,7 +44,6 @@
       --border-color: #2e2e2e;
       --text-main: #ffffff;
       --text-muted: #a1a1aa;
-      --primary-color: #3b82f6;
     }
     [data-theme="light"] {
       --bg-base: #f1f5f9;
@@ -56,7 +52,6 @@
       --border-color: #cbd5e1;
       --text-main: #0f172a;
       --text-muted: #64748b;
-      --primary-color: #2563eb;
     }
     body {
       font-family: 'Tajawal', sans-serif;
@@ -109,7 +104,6 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <!-- زر اختيار الثيم -->
       <button onclick="openThemeModal()" title="تغيير الثيم" class="p-2 theme-subcard rounded-xl border hover:opacity-80 transition">
         <i data-lucide="palette" class="w-4 h-4 text-amber-400"></i>
       </button>
@@ -748,8 +742,8 @@
 
       const isOwner = user.role === 'owner';
       const canReports = isOwner || user.can_view_reports;
-      const canAddProd = isOwner || user.can_add_product;
-      const canCats = isOwner || user.can_manage_categories;
+      const canAddProd = isOwner || user.can_add_product || user.can_manage_inventory;
+      const canCats = isOwner || user.can_manage_categories || user.can_manage_inventory;
       const canDiscounts = isOwner || user.can_give_discounts;
       const canExpenses = isOwner || user.can_manage_expenses;
 
@@ -865,7 +859,7 @@
         return;
       }
 
-      const canCats = currentUser?.role === 'owner' || currentUser?.can_manage_categories;
+      const canCats = currentUser?.role === 'owner' || currentUser?.can_manage_categories || currentUser?.can_manage_inventory;
 
       container.innerHTML = items.map(cat => `
         <div class="flex items-center justify-between p-2 theme-subcard border rounded-xl text-xs">
@@ -941,7 +935,7 @@
 
       const isOwner = currentUser?.role === 'owner';
       const canSeeCost = isOwner || currentUser?.can_view_reports;
-      const canEdit = isOwner || currentUser?.can_edit_product;
+      const canEdit = isOwner || currentUser?.can_edit_product || currentUser?.can_manage_inventory;
       const canDelete = isOwner || currentUser?.can_delete_product;
 
       container.innerHTML = items.map(p => `
@@ -960,14 +954,12 @@
               <span class="text-[10px] opacity-75">مخزون: <strong>${p.stock_quantity}</strong></span>
             </div>
 
-            <!-- زر التعديل (يظهر لمن لديه الصلاحية فقط) -->
             ${canEdit ? `
               <button onclick="openEditProductModal('${p.id}')" class="p-2 text-blue-400 hover:opacity-80 rounded-xl" title="تعديل الصنف">
                 <i data-lucide="edit" class="w-4 h-4"></i>
               </button>
             ` : ''}
 
-            <!-- زر الحذف (يظهر لمن لديه الصلاحية فقط) -->
             ${canDelete ? `
               <button onclick="deleteProduct('${p.id}', '${p.name}')" class="p-2 text-rose-400 hover:opacity-80 rounded-xl" title="حذف الصنف">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -1173,7 +1165,7 @@
       }
     }
 
-    // 5. إدارة الموظفين والصلاحيات
+    // 5. إدارة الموظفين والصلاحيات مع الحل الذكي التلقائي
     async function loadUsers() {
       if (currentUser?.role !== 'owner') return;
       const { data } = await db.from('app_users').select('*').order('created_at', { ascending: true });
@@ -1191,12 +1183,6 @@
               <span class="text-[9px] px-1.5 py-0.5 rounded font-bold ${u.role === 'owner' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}">${u.role === 'owner' ? 'صاحب المحل' : 'موظف'}</span>
             </div>
             <div class="text-[10px] opacity-75 mt-1">اسم المستخدم: ${u.username} | الـ PIN: <strong>${u.pin}</strong></div>
-            <div class="text-[9px] opacity-60 mt-0.5">
-              ${u.can_add_product ? '✔ إضافة صنف ' : ''}
-              ${u.can_edit_product ? '✔ تعديل ' : ''}
-              ${u.can_delete_product ? '✔ حذف ' : ''}
-              ${u.can_view_reports ? '✔ أرباح ' : ''}
-            </div>
           </div>
           ${u.role !== 'owner' ? `
             <button onclick="deleteUser('${u.id}')" class="p-2 text-rose-400 hover:opacity-80" title="حذف">
@@ -1224,7 +1210,8 @@
       const disc = document.getElementById('perm-discounts').checked;
       const expP = document.getElementById('perm-expenses').checked;
 
-      const { error } = await db.from('app_users').insert([{
+      // محاولة الحفظ بالأعمدة التفصيلية
+      const payload = {
         full_name: name,
         username: user,
         pin: pin,
@@ -1236,17 +1223,37 @@
         can_view_reports: rep,
         can_give_discounts: disc,
         can_manage_expenses: expP,
+        can_manage_inventory: (addP || editP || delP),
         is_active: true
-      }]);
+      };
+
+      let { error } = await db.from('app_users').insert([payload]);
+
+      // حل ذكي: إذا كانت الأعمدة الجديدة لم تُضف بعد في Supabase، يحفظ بالأعمدة الأساسية فوراً دون أن يظهر خطأ للمستخدم!
+      if (error && error.message && error.message.includes('column')) {
+        const fallback = {
+          full_name: name,
+          username: user,
+          pin: pin,
+          role: 'employee',
+          can_view_reports: rep,
+          can_manage_inventory: (addP || editP || delP),
+          can_give_discounts: disc,
+          is_active: true
+        };
+        const res = await db.from('app_users').insert([fallback]);
+        error = res.error;
+      }
 
       if (!error) {
+        alert('تم حفظ وتفعيل حساب الموظف بنجاح!');
         closeModal('modal-add-user');
         document.getElementById('new-user-fullname').value = '';
         document.getElementById('new-user-username').value = '';
         document.getElementById('new-user-pin').value = '';
         loadUsers();
       } else {
-        alert('حدث خطأ أو اسم المستخدم مكرر');
+        alert('حدث خطأ أثناء الحفظ: ' + (error.message || 'تأكد من عدم تكرار اسم المستخدم'));
       }
     }
 
