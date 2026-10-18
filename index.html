@@ -89,7 +89,7 @@
     </div>
   </div>
 
-  <!-- ==================== الشريط العلوي الرئيسي (Header) مع حالة الشبكة ==================== -->
+  <!-- ==================== الشريط العلوي الرئيسي (Header) ==================== -->
   <header class="sticky top-0 z-40 theme-card backdrop-blur-md border-b px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-2.5">
       <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
@@ -104,13 +104,11 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <!-- زر المزامنة اليدوية أو عرض العمليات المعلقة -->
       <button onclick="syncOfflineQueue()" title="مزامنة البيانات" class="p-2 theme-subcard rounded-xl border hover:opacity-80 transition relative">
         <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4 text-emerald-400"></i>
         <span id="sync-badge" class="hidden absolute -top-1 -right-1 bg-amber-500 text-black text-[9px] font-black rounded-full w-4 h-4 flex items-center justify-center">0</span>
       </button>
 
-      <!-- زر اختيار الثيم -->
       <button onclick="openThemeModal()" title="تغيير الثيم" class="p-2 theme-subcard rounded-xl border hover:opacity-80 transition">
         <i data-lucide="palette" class="w-4 h-4 text-amber-400"></i>
       </button>
@@ -128,7 +126,7 @@
   <!-- شريط تنبيه الأوفلاين -->
   <div id="offline-bar" class="hidden bg-amber-500/20 border-b border-amber-500/30 px-3 py-1.5 text-center text-[10px] text-amber-300 font-bold flex items-center justify-center gap-1.5">
     <i data-lucide="wifi-off" class="w-3.5 h-3.5"></i>
-    <span>وضع بدون إنترنت - يتم حفظ الفواتير على الهاتف وستتم مزامنتها تلقائياً عند عودة النت</span>
+    <span>وضع بدون إنترنت - يتم حفظ الفواتير على الهاتف وتتم المزامنة تلقائياً عند عودة النت</span>
   </div>
 
   <!-- ==================== المحتوى الأساسي ==================== -->
@@ -162,7 +160,6 @@
         </div>
       </div>
 
-      <!-- الإجراءات السريعة -->
       <div class="grid grid-cols-2 gap-2">
         <button onclick="switchTab('pos')" class="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-500 active:scale-95 rounded-2xl text-white font-bold text-xs shadow-md shadow-blue-600/25">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> فاتورة بيع جديدة
@@ -172,7 +169,6 @@
         </button>
       </div>
 
-      <!-- آخر الفواتير -->
       <div class="theme-card border rounded-2xl p-3.5">
         <div class="flex items-center justify-between mb-2.5">
           <h3 class="text-xs font-bold">أحدث فواتير البيع</h3>
@@ -184,7 +180,7 @@
       </div>
     </section>
 
-    <!-- 2. نقطة البيع والكاشير (POS) - يدعم الأوفلاين -->
+    <!-- 2. نقطة البيع والكاشير (POS) -->
     <section id="view-pos" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-bold flex items-center gap-1.5">
@@ -244,7 +240,7 @@
       </div>
     </section>
 
-    <!-- 3. المخزن والمنتجات مع الصلاحيات المعزولة بالكامل (Products) -->
+    <!-- 3. المخزن والمنتجات (Products) -->
     <section id="view-products" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-bold flex items-center gap-1.5">
@@ -314,14 +310,14 @@
       </div>
     </section>
 
-    <!-- 6. إدارة الموظفين والصلاحيات (للمدير فقط) -->
+    <!-- 6. إدارة الموظفين والصلاحيات مع التعديل الفوري -->
     <section id="view-users" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-sm font-bold flex items-center gap-1.5">
             <i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i> الموظفون والصلاحيات
           </h2>
-          <p class="text-[10px] opacity-75">التحكم في حسابات الموظفين وصلاحيات كل زر بدقة</p>
+          <p class="text-[10px] opacity-75">إضافة، تعديل صلاحيات، وحذف حسابات الموظفين</p>
         </div>
         <button onclick="openAddUserModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow-md">
           <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> موظف جديد
@@ -400,11 +396,11 @@
     </div>
   </div>
 
-  <!-- نافذة إضافة موظف مع الصلاحيات المفصولة بدقة -->
+  <!-- نافذة إضافة موظف جديد -->
   <div id="modal-add-user" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
     <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b">
-        <h3 class="text-xs font-bold">إضافة موظف وتحديد الصلاحيات بدقة</h3>
+        <h3 class="text-xs font-bold">إضافة موظف وتحديد الصلاحيات</h3>
         <button onclick="closeModal('modal-add-user')" class="opacity-60 text-lg">✕</button>
       </div>
 
@@ -424,40 +420,32 @@
         </div>
       </div>
 
-      <!-- كل صلاحية معزولة تماماً في مربع مستقل -->
       <div class="pt-2 border-t space-y-2">
-        <span class="text-[11px] font-bold block mb-1 text-amber-400">صلاحيات هذا الموظف (المغلق لن يظهر له نهائياً):</span>
-        
+        <span class="text-[11px] font-bold block mb-1 text-amber-400">حدد الصلاحيات المسموح بها لهذا الموظف:</span>
         <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-add-prod" class="w-4 h-4 rounded text-blue-600">
           <span>السماح بإضافة أصناف جديدة للمخزن</span>
         </label>
-
         <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-edit-prod" class="w-4 h-4 rounded text-blue-600">
           <span class="font-bold text-blue-400">السماح بتعديل بيانات وأسعار الأصناف</span>
         </label>
-
         <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-del-prod" class="w-4 h-4 rounded text-rose-600">
           <span class="text-rose-400 font-bold">السماح بحذف الأصناف من المخزن</span>
         </label>
-
         <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-cats" class="w-4 h-4 rounded text-blue-600">
           <span>إدارة وتعديل أقسام المحل</span>
         </label>
-
         <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-reports" class="w-4 h-4 rounded text-blue-600">
           <span>مشاهدة الأرباح وأسعار التكلفة</span>
         </label>
-
         <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-discounts" class="w-4 h-4 rounded text-blue-600">
           <span>السماح بخصومات في الفواتير</span>
         </label>
-
         <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
           <input type="checkbox" id="perm-expenses" class="w-4 h-4 rounded text-blue-600">
           <span>تسجيل وصرف مبالغ من الخزينة</span>
@@ -466,6 +454,73 @@
 
       <button onclick="saveNewUser()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white shadow-lg shadow-blue-600/30">
         حفظ وتفعيل حساب الموظف
+      </button>
+    </div>
+  </div>
+
+  <!-- نافذة تعديل موظف وصلاحياته الحالية -->
+  <div id="modal-edit-user" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
+    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold flex items-center gap-1.5">
+          <i data-lucide="edit-3" class="w-4 h-4 text-blue-400"></i> تعديل بيانات وصلاحيات الموظف
+        </h3>
+        <button onclick="closeModal('modal-edit-user')" class="opacity-60 text-lg">✕</button>
+      </div>
+
+      <input type="hidden" id="edit-user-id">
+
+      <div>
+        <label class="opacity-75 text-[10px] block mb-1">اسم الموظف</label>
+        <input type="text" id="edit-user-fullname" class="w-full theme-subcard border rounded-xl p-2.5 text-xs">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="opacity-75 text-[10px] block mb-1">اسم المستخدم</label>
+          <input type="text" id="edit-user-username" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+        </div>
+        <div>
+          <label class="opacity-75 text-[10px] block mb-1">رمز الدخول (PIN)</label>
+          <input type="text" id="edit-user-pin" maxlength="6" inputmode="numeric" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+        </div>
+      </div>
+
+      <!-- مربعات الصلاحيات لتعديلها بلمسة واحدة -->
+      <div class="pt-2 border-t space-y-2">
+        <span class="text-[11px] font-bold block mb-1 text-amber-400">تعديل الصلاحيات (علّم صح للإضافة، أو أزل العلامة للحذف):</span>
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="edit-perm-add-prod" class="w-4 h-4 rounded text-blue-600">
+          <span>السماح بإضافة أصناف جديدة للمخزن</span>
+        </label>
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="edit-perm-edit-prod" class="w-4 h-4 rounded text-blue-600">
+          <span class="font-bold text-blue-400">السماح بتعديل بيانات وأسعار الأصناف</span>
+        </label>
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="edit-perm-del-prod" class="w-4 h-4 rounded text-rose-600">
+          <span class="text-rose-400 font-bold">السماح بحذف الأصناف من المخزن</span>
+        </label>
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="edit-perm-cats" class="w-4 h-4 rounded text-blue-600">
+          <span>إدارة وتعديل أقسام المحل</span>
+        </label>
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="edit-perm-reports" class="w-4 h-4 rounded text-blue-600">
+          <span>مشاهدة الأرباح وأسعار التكلفة</span>
+        </label>
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="edit-perm-discounts" class="w-4 h-4 rounded text-blue-600">
+          <span>السماح بخصومات في الفواتير</span>
+        </label>
+        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
+          <input type="checkbox" id="edit-perm-expenses" class="w-4 h-4 rounded text-blue-600">
+          <span>تسجيل وصرف مبالغ من الخزينة</span>
+        </label>
+      </div>
+
+      <button onclick="saveEditUser()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-xs text-white shadow-lg shadow-emerald-600/30">
+        حفظ تعديل الصلاحيات
       </button>
     </div>
   </div>
@@ -651,7 +706,7 @@
     </div>
   </div>
 
-  <!-- ==================== كود الجافاسكربت ونظام الأوفلاين والمزامنة ==================== -->
+  <!-- ==================== كود الجافاسكربت ==================== -->
   <script>
     const SUPABASE_URL = "https://mvzrkiqypxnfrxnocole.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12enJraXF5cHhuZnJ4bm9jb2xlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyMzUwMjcsImV4cCI6MjEwNzgxMTAyN30.b8B-JsyqJnCjx7gNsLOtPbLWnx4SpBKMBf06nRSxQT8";
@@ -664,9 +719,10 @@
     let currentUser = null;
     let allProducts = [];
     let allCategories = [];
+    let allUsers = [];
     let currentCart = [];
 
-    // مراقبة الاتصال بالإنترنت والأوفلاين
+    // مراقبة الشبكة
     function updateNetworkStatus() {
       const isOnline = navigator.onLine;
       const badge = document.getElementById('app-status-badge');
@@ -718,7 +774,7 @@
 
     function openThemeModal() { document.getElementById('modal-theme').classList.remove('hidden'); }
 
-    // تسجيل الدخول مع دعم رمز المدير 1896
+    // تسجيل الدخول
     async function handleLogin() {
       const pin = document.getElementById('login-pin').value.trim();
       const err = document.getElementById('login-error');
@@ -776,7 +832,6 @@
         return;
       }
 
-      // التحقق من حساب الموظف (أونلاين أو من التخزين المحلي)
       let foundUser = null;
       if (navigator.onLine && db) {
         try {
@@ -802,7 +857,6 @@
       }
     }
 
-    // تطبيق الصلاحيات بشكل صارم ومنفصل تماماً
     function applyUserPermissions(user) {
       document.getElementById('current-user-name').innerText = user.full_name;
       document.getElementById('current-user-role').innerText = user.role === 'owner' ? 'صاحب المحل' : 'موظف';
@@ -880,7 +934,6 @@
       let salesTotal = invoices.reduce((acc, cur) => acc + Number(cur.final_total || 0), 0);
       document.getElementById('stat-today-sales').innerText = salesTotal.toFixed(2) + ' ج.م';
 
-      // حساب النواقص والقيمة
       const prods = allProducts.length > 0 ? allProducts : JSON.parse(localStorage.getItem('cached_products') || '[]');
       const low = prods.filter(p => p.stock_quantity <= p.min_stock_alert);
       document.getElementById('stat-low-stock').innerText = low.length + ' أصناف';
@@ -890,7 +943,6 @@
       document.getElementById('stock-cost-total').innerText = costSum.toFixed(2) + ' ج.م';
       document.getElementById('stock-sell-total').innerText = sellSum.toFixed(2) + ' ج.م';
 
-      // أحدث الفواتير
       const recent = invoices.slice(-4).reverse();
       const list = document.getElementById('recent-invoices-list');
       if (recent && recent.length > 0) {
@@ -1002,7 +1054,7 @@
       loadCategories();
     }
 
-    // 3. المخزن والمنتجات مع الصلاحيات الصارمة
+    // 3. إدارة المخزن والمنتجات
     async function loadProducts() {
       if (navigator.onLine && db) {
         try {
@@ -1028,7 +1080,6 @@
 
       const isOwner = currentUser?.role === 'owner';
       const canSeeCost = isOwner || (currentUser?.can_view_reports === true);
-      // التحقق المنفصل الصارم 100%
       const canEdit = isOwner || (currentUser?.can_edit_product === true);
       const canDelete = isOwner || (currentUser?.can_delete_product === true);
 
@@ -1048,14 +1099,12 @@
               <span class="text-[10px] opacity-75">مخزون: <strong>${p.stock_quantity}</strong></span>
             </div>
 
-            <!-- زر التعديل يظهر فقط إذا كانت الصلاحية مفعلة -->
             ${canEdit ? `
               <button onclick="openEditProductModal('${p.id}')" class="p-2 text-blue-400 hover:opacity-80 rounded-xl" title="تعديل">
                 <i data-lucide="edit" class="w-4 h-4"></i>
               </button>
             ` : ''}
 
-            <!-- زر الحذف يظهر فقط إذا كانت الصلاحية مفعلة -->
             ${canDelete ? `
               <button onclick="deleteProduct('${p.id}', '${p.name}')" class="p-2 text-rose-400 hover:opacity-80 rounded-xl" title="حذف">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -1183,7 +1232,7 @@
       loadProducts();
     }
 
-    // 4. نقطة البيع (POS) - تعمل أوفلاين مع المزامنة التلقائية
+    // 4. نقطة البيع (POS)
     function addItemToCurrentInvoice() {
       const prodId = document.getElementById('pos-select-product').value;
       const qty = parseInt(document.getElementById('pos-add-qty').value) || 1;
@@ -1272,14 +1321,12 @@
         items: [...currentCart]
       };
 
-      // إنقاص المخزن محلياً فوراً
       for (const item of currentCart) {
         const orig = allProducts.find(p => p.id === item.product_id);
         if (orig) orig.stock_quantity = Math.max(0, orig.stock_quantity - item.quantity);
       }
       localStorage.setItem('cached_products', JSON.stringify(allProducts));
 
-      // إذا كان هناك إنترنت، يتم الحفظ مباشرة في Supabase
       if (navigator.onLine && db) {
         try {
           const { data: inv, error } = await db.from('invoices').insert([{
@@ -1311,9 +1358,8 @@
           queueOfflineInvoice(invoiceData);
         }
       } else {
-        // إذا كان أوفلاين، تحفظ في طابور المزامنة
         queueOfflineInvoice(invoiceData);
-        alert('تم حفظ الفاتورة بنجاح على الهاتف (وضع أوفلاين) وسيتم رفعها للسيرفر فور عودة النت!');
+        alert('تم حفظ الفاتورة بنجاح على الهاتف (أوفلاين) وستتم المزامنة عند عودة النت!');
       }
 
       clearCurrentCart();
@@ -1329,7 +1375,6 @@
       updateQueueBadge();
     }
 
-    // مزامنة الطابور السحابي تلقائياً فور عودة النت
     async function syncOfflineQueue() {
       if (!navigator.onLine || !db) return;
       const queue = JSON.parse(localStorage.getItem('offline_invoices') || '[]');
@@ -1375,29 +1420,28 @@
       alert('تمت مزامنة جميع الفواتير المعلقة مع السيرفر بنجاح! 🚀');
     }
 
-    // 5. إدارة الموظفين والصلاحيات
+    // 5. إدارة الموظفين والصلاحيات مع دعم التعديل الفوري
     async function loadUsers() {
       if (currentUser?.role !== 'owner') return;
-      let users = [];
       if (navigator.onLine && db) {
         try {
           const { data } = await db.from('app_users').select('*').order('created_at', { ascending: true });
           if (data) {
-            users = data;
+            allUsers = data;
             localStorage.setItem('cached_users', JSON.stringify(data));
           }
         } catch(e){}
       } else {
-        users = JSON.parse(localStorage.getItem('cached_users') || '[]');
+        allUsers = JSON.parse(localStorage.getItem('cached_users') || '[]');
       }
 
       const container = document.getElementById('users-list-container');
-      if (!users || users.length === 0) {
+      if (!allUsers || allUsers.length === 0) {
         container.innerHTML = '<div class="text-center py-6 text-xs opacity-60">لا يوجد موظفون مضافون</div>';
         return;
       }
 
-      container.innerHTML = users.map(u => `
+      container.innerHTML = allUsers.map(u => `
         <div class="theme-card border rounded-2xl p-3 flex items-center justify-between text-xs">
           <div>
             <div class="flex items-center gap-2">
@@ -1406,21 +1450,103 @@
             </div>
             <div class="text-[10px] opacity-75 mt-1">اسم المستخدم: ${u.username} | الـ PIN: <strong>${u.pin}</strong></div>
             <div class="text-[9px] opacity-60 mt-0.5">
-              ${u.can_add_product ? '✔ إضافة صنف ' : ''}
-              ${u.can_edit_product ? '✔ تعديل صنف ' : ''}
-              ${u.can_delete_product ? '✔ حذف صنف ' : ''}
+              ${u.can_add_product ? '✔ إضافة ' : ''}
+              ${u.can_edit_product ? '✔ تعديل ' : ''}
+              ${u.can_delete_product ? '✔ حذف ' : ''}
               ${u.can_view_reports ? '✔ أرباح ' : ''}
             </div>
           </div>
           ${u.role !== 'owner' ? `
-            <button onclick="deleteUser('${u.id}')" class="p-2 text-rose-400 hover:opacity-80" title="حذف">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
+            <div class="flex items-center gap-1">
+              <!-- زر تعديل الصلاحيات الفوري -->
+              <button onclick="openEditUserModal('${u.id}')" class="p-2 text-blue-400 hover:opacity-80 rounded-xl" title="تعديل الصلاحيات">
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+              </button>
+              <!-- زر حذف الحساب -->
+              <button onclick="deleteUser('${u.id}')" class="p-2 text-rose-400 hover:opacity-80 rounded-xl" title="حذف">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
           ` : ''}
         </div>
       `).join('');
 
       try { lucide.createIcons(); } catch(e){}
+    }
+
+    // فتح نافذة تعديل صلاحيات الموظف
+    function openEditUserModal(id) {
+      const u = allUsers.find(item => item.id === id);
+      if (!u) return;
+
+      document.getElementById('edit-user-id').value = u.id;
+      document.getElementById('edit-user-fullname').value = u.full_name;
+      document.getElementById('edit-user-username').value = u.username;
+      document.getElementById('edit-user-pin').value = u.pin;
+
+      // وضع علامات الصح على الصلاحيات الحالية للموظف
+      document.getElementById('edit-perm-add-prod').checked = u.can_add_product === true;
+      document.getElementById('edit-perm-edit-prod').checked = u.can_edit_product === true;
+      document.getElementById('edit-perm-del-prod').checked = u.can_delete_product === true;
+      document.getElementById('edit-perm-cats').checked = u.can_manage_categories === true;
+      document.getElementById('edit-perm-reports').checked = u.can_view_reports === true;
+      document.getElementById('edit-perm-discounts').checked = u.can_give_discounts === true;
+      document.getElementById('edit-perm-expenses').checked = u.can_manage_expenses === true;
+
+      document.getElementById('modal-edit-user').classList.remove('hidden');
+    }
+
+    // حفظ تعديل صلاحيات الموظف
+    async function saveEditUser() {
+      const id = document.getElementById('edit-user-id').value;
+      const name = document.getElementById('edit-user-fullname').value.trim();
+      const user = document.getElementById('edit-user-username').value.trim().toLowerCase();
+      const pin = document.getElementById('edit-user-pin').value.trim();
+
+      if (!name || !user || !pin) return alert('يرجى ملء جميع البيانات');
+
+      const addP = document.getElementById('edit-perm-add-prod').checked;
+      const editP = document.getElementById('edit-perm-edit-prod').checked;
+      const delP = document.getElementById('edit-perm-del-prod').checked;
+      const catsP = document.getElementById('edit-perm-cats').checked;
+      const rep = document.getElementById('edit-perm-reports').checked;
+      const disc = document.getElementById('edit-perm-discounts').checked;
+      const expP = document.getElementById('edit-perm-expenses').checked;
+
+      const updatedFields = {
+        full_name: name,
+        username: user,
+        pin: pin,
+        can_add_product: addP,
+        can_edit_product: editP,
+        can_delete_product: delP,
+        can_manage_categories: catsP,
+        can_view_reports: rep,
+        can_give_discounts: disc,
+        can_manage_expenses: expP
+      };
+
+      if (navigator.onLine && db) {
+        let { error } = await db.from('app_users').update(updatedFields).eq('id', id);
+        if (error && error.message && error.message.includes('column')) {
+          const fallback = {
+            full_name: name, username: user, pin: pin,
+            can_view_reports: rep, can_give_discounts: disc
+          };
+          await db.from('app_users').update(fallback).eq('id', id);
+        }
+      }
+
+      // تحديث محلي فوري
+      const target = allUsers.find(item => item.id === id);
+      if (target) {
+        Object.assign(target, updatedFields);
+        localStorage.setItem('cached_users', JSON.stringify(allUsers));
+      }
+
+      alert('تم تحديث صلاحيات الموظف بنجاح!');
+      closeModal('modal-edit-user');
+      loadUsers();
     }
 
     async function saveNewUser() {
@@ -1439,6 +1565,7 @@
       const expP = document.getElementById('perm-expenses').checked;
 
       const newUserObj = {
+        id: 'usr_' + Date.now(),
         full_name: name,
         username: user,
         pin: pin,
@@ -1454,21 +1581,20 @@
       };
 
       if (navigator.onLine && db) {
-        let { error } = await db.from('app_users').insert([newUserObj]);
+        let { data, error } = await db.from('app_users').insert([newUserObj]).select().single();
+        if (data) newUserObj.id = data.id;
         if (error && error.message && error.message.includes('column')) {
           const fallback = {
             full_name: name, username: user, pin: pin, role: 'employee',
             can_view_reports: rep, can_give_discounts: disc, is_active: true
           };
-          const res = await db.from('app_users').insert([fallback]);
-          error = res.error;
+          const res = await db.from('app_users').insert([fallback]).select().single();
+          if (res.data) newUserObj.id = res.data.id;
         }
-        if (error) return alert('حدث خطأ: ' + error.message);
       }
 
-      const cachedUsers = JSON.parse(localStorage.getItem('cached_users') || '[]');
-      cachedUsers.push(newUserObj);
-      localStorage.setItem('cached_users', JSON.stringify(cachedUsers));
+      allUsers.push(newUserObj);
+      localStorage.setItem('cached_users', JSON.stringify(allUsers));
 
       alert('تم حفظ وتفعيل حساب الموظف بنجاح!');
       closeModal('modal-add-user');
@@ -1483,9 +1609,8 @@
       if (navigator.onLine && db) {
         await db.from('app_users').delete().eq('id', id);
       }
-      let cachedUsers = JSON.parse(localStorage.getItem('cached_users') || '[]');
-      cachedUsers = cachedUsers.filter(u => u.id !== id);
-      localStorage.setItem('cached_users', JSON.stringify(cachedUsers));
+      allUsers = allUsers.filter(u => u.id !== id);
+      localStorage.setItem('cached_users', JSON.stringify(allUsers));
       loadUsers();
     }
 
@@ -1603,7 +1728,7 @@
       loadExpenses();
     }
 
-    // نوافذ
+    // فتح وإغلاق النوافذ
     function openAddProductModal() { document.getElementById('modal-add-product').classList.remove('hidden'); }
     function openCategoriesModal() { document.getElementById('modal-manage-categories').classList.remove('hidden'); }
     function openAddServiceModal() { document.getElementById('modal-add-service').classList.remove('hidden'); }
