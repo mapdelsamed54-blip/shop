@@ -3,157 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>نظام إدارة محل الإلكترونيات والدش المتكامل</title>
-  
+  <title>الرادار للإلكترونيات والدش</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    :root {
-      --bg-base: #0b1120;
-      --bg-card: #0f172a;
-      --bg-card-sub: #1e293b;
-      --border-color: #334155;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-    }
-    [data-theme="emerald"] {
-      --bg-base: #051a14;
-      --bg-card: #064e3b;
-      --bg-card-sub: #047857;
-      --border-color: #059669;
-      --text-main: #ecfdf5;
-      --text-muted: #6ee7b7;
-    }
-    [data-theme="indigo"] {
-      --bg-base: #0b0f19;
-      --bg-card: #1e1b4b;
-      --bg-card-sub: #312e81;
-      --border-color: #4338ca;
-      --text-main: #eef2ff;
-      --text-muted: #a5b4fc;
-    }
-    [data-theme="oled"] {
-      --bg-base: #000000;
-      --bg-card: #111111;
-      --bg-card-sub: #1f1f1f;
-      --border-color: #2e2e2e;
-      --text-main: #ffffff;
-      --text-muted: #a1a1aa;
-    }
-    [data-theme="light"] {
-      --bg-base: #f1f5f9;
-      --bg-card: #ffffff;
-      --bg-card-sub: #f8fafc;
-      --border-color: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-    }
-    body {
-      font-family: 'Tajawal', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-      background-color: var(--bg-base);
-      color: var(--text-main);
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-    .theme-card { background-color: var(--bg-card); border-color: var(--border-color); }
-    .theme-subcard { background-color: var(--bg-card-sub); border-color: var(--border-color); }
-    .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 75px); }
-    input, select, textarea { font-size: 14px !important; }
+    :root { --bg-base:#0b1120; --bg-card:#0f172a; --bg-sub:#1e293b; --border:#334155; --txt:#f8fafc; }
+    [data-theme="emerald"] { --bg-base:#051a14; --bg-card:#064e3b; --bg-sub:#047857; --border:#059669; --txt:#ecfdf5; }
+    [data-theme="indigo"] { --bg-base:#0b0f19; --bg-card:#1e1b4b; --bg-sub:#312e81; --border:#4338ca; --txt:#eef2ff; }
+    [data-theme="oled"] { --bg-base:#000000; --bg-card:#111111; --bg-sub:#1f1f1f; --border:#2e2e2e; --txt:#ffffff; }
+    [data-theme="light"] { --bg-base:#f1f5f9; --bg-card:#ffffff; --bg-sub:#f8fafc; --border:#cbd5e1; --txt:#0f172a; }
+    body { font-family:'Tajawal',sans-serif; background-color:var(--bg-base); color:var(--txt); -webkit-tap-highlight-color:transparent; }
+    .t-card { background-color:var(--bg-card); border-color:var(--border); }
+    .t-sub { background-color:var(--bg-sub); border-color:var(--border); }
+    .pb-safe { padding-bottom:calc(env(safe-area-inset-bottom, 16px) + 70px); }
+    input, select, textarea { font-size:14px !important; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-600">
 
-  <!-- ==================== شاشة تسجيل الدخول بالـ PIN الافتراضي 1896 ==================== -->
+  <!-- شاشة الدخول بالـ PIN -->
   <div id="login-modal" class="fixed inset-0 z-50 bg-slate-950 flex flex-col justify-center items-center p-6">
     <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center">
       <div class="w-16 h-16 bg-blue-600/20 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-blue-500/30">
         <i data-lucide="satellite" class="w-8 h-8"></i>
       </div>
-      <h2 class="text-xl font-extrabold text-white mb-1">Moody satlait</h2>
-      <p class="text-xs text-slate-400 mb-5">أدخل رمز الدخول (PIN) للبدء</p>
-      
-      <div class="mb-4">
-        <input type="password" id="login-pin" maxlength="6" inputmode="numeric" placeholder="••••" 
-               class="w-full text-center tracking-[0.8em] text-3xl font-bold py-3.5 bg-slate-800/90 border border-slate-700 rounded-2xl text-white focus:outline-none focus:border-blue-500 transition">
-        <p id="login-error" class="text-rose-500 text-xs mt-2.5 hidden font-medium">رمز الدخول غير صحيح، يرجى المحاولة ثانية</p>
-      </div>
-
+      <h2 class="text-xl font-extrabold text-white mb-1">الرادار للإلكترونيات والدش</h2>
+      <p class="text-xs text-slate-400 mb-5">أدخل رمز الدخول (PIN)</p>
+      <input type="password" id="login-pin" maxlength="6" inputmode="numeric" placeholder="••••" 
+             class="w-full text-center tracking-[0.8em] text-3xl font-bold py-3.5 bg-slate-800/90 border border-slate-700 rounded-2xl text-white focus:outline-none focus:border-blue-500 mb-2">
+      <p id="login-error" class="text-rose-500 text-xs mb-3 hidden font-medium">رمز الدخول غير صحيح</p>
       <button onclick="handleLogin()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 active:scale-95 transition font-bold text-white rounded-2xl shadow-lg shadow-blue-600/30 text-sm">
         دخول النظام
       </button>
     </div>
   </div>
 
-  <!-- ==================== الشريط العلوي الرئيسي (Header) ==================== -->
-  <header class="sticky top-0 z-40 theme-card backdrop-blur-md border-b px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center gap-2.5">
-      <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
+  <!-- الشريط العلوي -->
+  <header class="sticky top-0 z-40 t-card backdrop-blur-md border-b px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow">
         <i data-lucide="tv-2" class="w-5 h-5"></i>
       </div>
       <div>
-        <h1 class="text-xs font-bold leading-tight">مكة سات</h1>
+        <h1 class="text-xs font-bold leading-tight">الرادار للدش والكاميرات</h1>
         <p id="app-status-badge" class="text-[9px] text-emerald-400 flex items-center gap-1 font-bold">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> متصل بالسيرفر
         </p>
       </div>
     </div>
-    
     <div class="flex items-center gap-2">
-      <button onclick="syncOfflineQueue()" title="مزامنة البيانات" class="p-2 theme-subcard rounded-xl border hover:opacity-80 transition relative">
+      <button onclick="syncOfflineQueue()" title="مزامنة" class="p-2 t-sub rounded-xl border relative">
         <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4 text-emerald-400"></i>
         <span id="sync-badge" class="hidden absolute -top-1 -right-1 bg-amber-500 text-black text-[9px] font-black rounded-full w-4 h-4 flex items-center justify-center">0</span>
       </button>
-
-      <button onclick="openThemeModal()" title="تغيير الثيم" class="p-2 theme-subcard rounded-xl border hover:opacity-80 transition">
+      <button onclick="openModal('modal-theme')" title="الثيم" class="p-2 t-sub rounded-xl border">
         <i data-lucide="palette" class="w-4 h-4 text-amber-400"></i>
       </button>
-
-      <div class="text-left theme-subcard px-2.5 py-1 rounded-xl border">
+      <div class="text-left t-sub px-2.5 py-1 rounded-xl border">
         <span id="current-user-name" class="block text-xs font-bold">المدير العام</span>
         <span id="current-user-role" class="block text-[9px] text-blue-400 font-semibold">صاحب المحل</span>
       </div>
-      <button onclick="handleLogout()" title="تسجيل خروج" class="p-2 text-slate-400 hover:text-rose-400 theme-subcard rounded-xl border transition">
+      <button onclick="handleLogout()" class="p-2 text-slate-400 hover:text-rose-400 t-sub rounded-xl border">
         <i data-lucide="log-out" class="w-4 h-4"></i>
       </button>
     </div>
   </header>
 
-  <!-- شريط تنبيه الأوفلاين -->
-  <div id="offline-bar" class="hidden bg-amber-500/20 border-b border-amber-500/30 px-3 py-1.5 text-center text-[10px] text-amber-300 font-bold flex items-center justify-center gap-1.5">
+  <div id="offline-bar" class="hidden bg-amber-500/20 border-b border-amber-500/30 px-3 py-1.5 text-center text-[10px] text-amber-300 font-bold flex items-center justify-center gap-1">
     <i data-lucide="wifi-off" class="w-3.5 h-3.5"></i>
-    <span>وضع بدون إنترنت - يتم حفظ الفواتير على الهاتف وتتم المزامنة تلقائياً عند عودة النت</span>
+    <span>وضع بدون إنترنت - يتم الحفظ محلياً والمزامنة عند عودة النت</span>
   </div>
 
-  <!-- ==================== المحتوى الأساسي ==================== -->
+  <!-- المحتوى الرئيسي -->
   <main class="flex-1 p-3.5 pb-safe max-w-lg mx-auto w-full">
     
-    <!-- 1. الرئيسية واللوحة العامة (Dashboard) -->
+    <!-- 1. الرئيسية -->
     <section id="view-dashboard" class="space-y-3.5">
       <div class="grid grid-cols-2 gap-2.5">
-        <div class="theme-card border p-3 rounded-2xl relative overflow-hidden">
+        <div class="t-card border p-3 rounded-2xl relative overflow-hidden">
           <div class="text-xs opacity-75 font-medium mb-1">مبيعات اليوم</div>
           <div id="stat-today-sales" class="text-base font-extrabold text-emerald-400">0.00 ج.م</div>
           <i data-lucide="trending-up" class="w-7 h-7 text-emerald-500/10 absolute -bottom-1 left-2"></i>
         </div>
-
-        <div id="card-stat-profit" class="theme-card border p-3 rounded-2xl relative overflow-hidden">
-          <div class="text-xs opacity-75 font-medium mb-1">أرباح اليوم التقديرية</div>
+        <div id="card-stat-profit" class="t-card border p-3 rounded-2xl relative overflow-hidden">
+          <div class="text-xs opacity-75 font-medium mb-1">أرباح اليوم</div>
           <div id="stat-today-profit" class="text-base font-extrabold text-cyan-400">0.00 ج.م</div>
           <i data-lucide="coins" class="w-7 h-7 text-cyan-500/10 absolute -bottom-1 left-2"></i>
         </div>
-
-        <div class="theme-card border p-3 rounded-2xl relative overflow-hidden">
-          <div class="text-xs opacity-75 font-medium mb-1">أوامر صيانة جارية</div>
+        <div class="t-card border p-3 rounded-2xl relative overflow-hidden">
+          <div class="text-xs opacity-75 font-medium mb-1">أوامر صيانة</div>
           <div id="stat-active-services" class="text-base font-extrabold text-amber-400">0</div>
           <i data-lucide="wrench" class="w-7 h-7 text-amber-500/10 absolute -bottom-1 left-2"></i>
         </div>
-
-        <div class="theme-card border p-3 rounded-2xl relative overflow-hidden">
+        <div class="t-card border p-3 rounded-2xl relative overflow-hidden">
           <div class="text-xs opacity-75 font-medium mb-1">نواقص المخزن</div>
           <div id="stat-low-stock" class="text-base font-extrabold text-rose-400">0 أصناف</div>
           <i data-lucide="alert-triangle" class="w-7 h-7 text-rose-500/10 absolute -bottom-1 left-2"></i>
@@ -161,169 +107,143 @@
       </div>
 
       <div class="grid grid-cols-2 gap-2">
-        <button onclick="switchTab('pos')" class="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-500 active:scale-95 rounded-2xl text-white font-bold text-xs shadow-md shadow-blue-600/25">
+        <button onclick="switchTab('pos')" class="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-500 rounded-2xl text-white font-bold text-xs shadow-md">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> فاتورة بيع جديدة
         </button>
-        <button onclick="openAddServiceModal()" class="flex items-center justify-center gap-2 p-3 theme-card hover:opacity-90 active:scale-95 rounded-2xl font-bold text-xs border">
+        <button onclick="openModal('modal-add-service')" class="flex items-center justify-center gap-2 p-3 t-card rounded-2xl font-bold text-xs border">
           <i data-lucide="antenna" class="w-4 h-4 text-blue-400"></i> أمر صيانة / دش
         </button>
       </div>
 
-      <div class="theme-card border rounded-2xl p-3.5">
-        <div class="flex items-center justify-between mb-2.5">
+      <div class="t-card border rounded-2xl p-3.5">
+        <div class="flex items-center justify-between mb-2">
           <h3 class="text-xs font-bold">أحدث فواتير البيع</h3>
           <span class="text-[10px] text-blue-400 cursor-pointer" onclick="switchTab('pos')">فتح الكاشير</span>
         </div>
         <div id="recent-invoices-list" class="space-y-2">
-          <div class="text-center py-5 text-xs opacity-60">جاري تحميل الفواتير...</div>
+          <div class="text-center py-4 text-xs opacity-60">جاري تحميل الفواتير...</div>
         </div>
       </div>
     </section>
 
-    <!-- 2. نقطة البيع والكاشير (POS) -->
+    <!-- 2. الكاشير POS -->
     <section id="view-pos" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold flex items-center gap-1.5">
-          <i data-lucide="shopping-bag" class="w-4 h-4 text-emerald-400"></i> كاشير نقطة البيع
-        </h2>
+        <h2 class="text-sm font-bold flex items-center gap-1.5"><i data-lucide="shopping-bag" class="w-4 h-4 text-emerald-400"></i> كاشير نقطة البيع</h2>
         <button onclick="clearCurrentCart()" class="text-[11px] text-rose-400 hover:underline">مسح السلة</button>
       </div>
-
-      <div class="theme-card border rounded-2xl p-3 space-y-2.5">
-        <label class="text-[11px] font-bold block">اختر الصنف للإضافة للفاتورة:</label>
-        <select id="pos-select-product" class="w-full theme-subcard border rounded-xl p-2.5 text-xs focus:outline-none focus:border-blue-500">
-          <option value="">اختر الصنف من المخزن...</option>
-        </select>
+      <div class="t-card border rounded-2xl p-3 space-y-2.5">
+        <label class="text-[11px] font-bold block">اختر الصنف من المخزن:</label>
+        <select id="pos-select-product" class="w-full t-sub border rounded-xl p-2.5 text-xs focus:outline-none"></select>
         <div class="flex gap-2">
-          <input type="number" id="pos-add-qty" value="1" min="1" class="w-20 theme-subcard border rounded-xl p-2 text-center text-xs">
-          <button onclick="addItemToCurrentInvoice()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 active:scale-95 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5">
+          <input type="number" id="pos-add-qty" value="1" min="1" class="w-20 t-sub border rounded-xl p-2 text-center text-xs">
+          <button onclick="addItemToCurrentInvoice()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1">
             <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة للفاتورة
           </button>
         </div>
       </div>
-
       <div id="pos-cart-items" class="space-y-2">
-        <div class="text-center py-8 opacity-60 text-xs border border-dashed rounded-2xl">
-          لم يتم إضافة أصناف للفاتورة بعد
-        </div>
+        <div class="text-center py-6 opacity-60 text-xs border border-dashed rounded-2xl">السلة فارغة</div>
       </div>
-
-      <div class="theme-card border rounded-2xl p-3.5 space-y-2.5">
+      <div class="t-card border rounded-2xl p-3.5 space-y-2.5">
         <div class="flex justify-between items-center text-sm font-bold pb-2 border-b">
           <span>الإجمالي النهائي:</span>
           <span id="pos-cart-total" class="text-lg text-emerald-400 font-extrabold">0.00 ج.م</span>
         </div>
-
         <div class="grid grid-cols-2 gap-2 text-xs">
           <div>
             <label class="opacity-75 text-[10px] block mb-1">اسم العميل (اختياري)</label>
-            <input type="text" id="pos-customer-name" placeholder="عميل نقدي" class="w-full theme-subcard border rounded-xl p-2">
+            <input type="text" id="pos-customer-name" placeholder="عميل نقدي" class="w-full t-sub border rounded-xl p-2">
           </div>
           <div>
             <label class="opacity-75 text-[10px] block mb-1">طريقة الدفع</label>
-            <select id="pos-payment-method" class="w-full theme-subcard border rounded-xl p-2">
+            <select id="pos-payment-method" class="w-full t-sub border rounded-xl p-2">
               <option value="cash">نقداً (كاش)</option>
               <option value="wallet">محفظة (فودافون كاش)</option>
-              <option value="bank">تحويل بنكي / إنستاباي</option>
+              <option value="bank">تحويل / إنستاباي</option>
             </select>
           </div>
         </div>
-
         <div id="pos-discount-box" class="flex items-center gap-2">
           <label class="opacity-75 text-[10px] whitespace-nowrap">خصم (ج.م):</label>
-          <input type="number" id="pos-discount-input" value="0" min="0" oninput="updateCartUI()" class="w-full theme-subcard border rounded-xl p-1.5 text-xs">
+          <input type="number" id="pos-discount-input" value="0" min="0" oninput="updateCartUI()" class="w-full t-sub border rounded-xl p-1.5 text-xs">
         </div>
-
-        <button onclick="confirmAndSaveInvoice()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 rounded-xl font-bold text-white text-xs shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
-          <i data-lucide="check-circle" class="w-4 h-4"></i> حفظ الفاتورة (أونلاين وأوفلاين)
+        <button onclick="confirmAndSaveInvoice()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-white text-xs shadow-lg flex items-center justify-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i> حفظ الفاتورة وخصم المخزون
         </button>
       </div>
     </section>
 
-    <!-- 3. المخزن والمنتجات (Products) -->
+    <!-- 3. المخزن -->
     <section id="view-products" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold flex items-center gap-1.5">
-          <i data-lucide="boxes" class="w-4 h-4 text-blue-400"></i> المخزن والمنتجات
-        </h2>
+        <h2 class="text-sm font-bold flex items-center gap-1.5"><i data-lucide="boxes" class="w-4 h-4 text-blue-400"></i> المخزن والمنتجات</h2>
         <div class="flex gap-1.5">
-          <button id="btn-manage-cats" onclick="openCategoriesModal()" class="px-2.5 py-1.5 theme-subcard hover:opacity-80 rounded-xl text-[11px] font-bold flex items-center gap-1 border">
+          <button id="btn-manage-cats" onclick="openModal('modal-manage-categories')" class="px-2.5 py-1.5 t-sub rounded-xl text-[11px] font-bold flex items-center gap-1 border">
             <i data-lucide="layers" class="w-3.5 h-3.5 text-amber-400"></i> الأقسام
           </button>
-          <button id="btn-add-product" onclick="openAddProductModal()" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-[11px] font-bold text-white flex items-center gap-1 shadow-md">
+          <button id="btn-add-product" onclick="openModal('modal-add-product')" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-[11px] font-bold text-white flex items-center gap-1 shadow">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i> صنف جديد
           </button>
         </div>
       </div>
-
-      <div id="stock-val-card" class="theme-card border p-3 rounded-2xl flex justify-between items-center text-xs">
+      <div id="stock-val-card" class="t-card border p-3 rounded-2xl flex justify-between items-center text-xs">
         <div>
-          <span class="opacity-75 block text-[10px]">قيمة البضاعة بسعر الشراء</span>
+          <span class="opacity-75 block text-[10px]">قيمة البضاعة (شراء)</span>
           <span id="stock-cost-total" class="font-extrabold text-blue-400 text-sm">0.00 ج.م</span>
         </div>
         <div class="text-left">
-          <span class="opacity-75 block text-[10px]">قيمة البضاعة بسعر البيع</span>
+          <span class="opacity-75 block text-[10px]">قيمة البضاعة (بيع)</span>
           <span id="stock-sell-total" class="font-extrabold text-emerald-400 text-sm">0.00 ج.م</span>
         </div>
       </div>
-
       <div class="relative">
         <i data-lucide="search" class="w-4 h-4 opacity-50 absolute right-3.5 top-3"></i>
-        <input type="text" id="search-products-input" oninput="filterProductsUI()" placeholder="ابحث باسم المنتج أو الصنف..."
-               class="w-full theme-card border rounded-2xl pr-10 pl-4 py-2.5 text-xs focus:outline-none focus:border-blue-500">
+        <input type="text" id="search-products-input" oninput="filterProductsUI()" placeholder="ابحث باسم المنتج..."
+               class="w-full t-card border rounded-2xl pr-10 pl-4 py-2 text-xs focus:outline-none">
       </div>
-
       <div id="products-list-container" class="space-y-2">
         <div class="text-center py-6 text-xs opacity-60">جاري قراءة الأصناف...</div>
       </div>
     </section>
 
-    <!-- 4. أوامر الصيانة والدش (Services) -->
+    <!-- 4. الصيانة -->
     <section id="view-services" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold flex items-center gap-1.5">
-          <i data-lucide="antenna" class="w-4 h-4 text-amber-400"></i> الصيانة والدش والكاميرات
-        </h2>
-        <button onclick="openAddServiceModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow-md">
+        <h2 class="text-sm font-bold flex items-center gap-1.5"><i data-lucide="antenna" class="w-4 h-4 text-amber-400"></i> الصيانة والدش</h2>
+        <button onclick="openModal('modal-add-service')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow">
           <i data-lucide="plus" class="w-3.5 h-3.5"></i> طلب صيانة
         </button>
       </div>
-
       <div id="services-list-container" class="space-y-2">
         <div class="text-center py-6 text-xs opacity-60">جاري تحميل طلبات الصيانة...</div>
       </div>
     </section>
 
-    <!-- 5. الخزينة والمصروفات (Cash & Expenses) -->
+    <!-- 5. الخزينة -->
     <section id="view-expenses" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold flex items-center gap-1.5">
-          <i data-lucide="wallet" class="w-4 h-4 text-rose-400"></i> الخزينة والمصروفات
-        </h2>
-        <button id="btn-add-expense" onclick="openAddExpenseModal()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow-md">
+        <h2 class="text-sm font-bold flex items-center gap-1.5"><i data-lucide="wallet" class="w-4 h-4 text-rose-400"></i> الخزينة والمصروفات</h2>
+        <button id="btn-add-expense" onclick="openModal('modal-add-expense')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow">
           <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i> تسجيل صرف
         </button>
       </div>
-
       <div id="expenses-list-container" class="space-y-2">
         <div class="text-center py-6 text-xs opacity-60">جاري قراءة المصروفات...</div>
       </div>
     </section>
 
-    <!-- 6. إدارة الموظفين والصلاحيات مع التعديل الفوري -->
+    <!-- 6. الموظفون -->
     <section id="view-users" class="hidden space-y-3.5">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-sm font-bold flex items-center gap-1.5">
-            <i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i> الموظفون والصلاحيات
-          </h2>
-          <p class="text-[10px] opacity-75">إضافة، تعديل صلاحيات، وحذف حسابات الموظفين</p>
+          <h2 class="text-sm font-bold flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i> الموظفون والصلاحيات</h2>
+          <p class="text-[10px] opacity-75">التحكم الفوري في الحسابات والصلاحيات</p>
         </div>
-        <button onclick="openAddUserModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow-md">
+        <button onclick="openModal('modal-add-user')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white flex items-center gap-1 shadow">
           <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> موظف جديد
         </button>
       </div>
-
       <div id="users-list-container" class="space-y-2">
         <div class="text-center py-6 text-xs opacity-60">جاري جلب حسابات الموظفين...</div>
       </div>
@@ -331,203 +251,89 @@
 
   </main>
 
-  <!-- ==================== شريط التنقل السفلي ==================== -->
-  <nav class="fixed bottom-0 inset-x-0 theme-card backdrop-blur-lg border-t z-40 px-1 py-1.5 flex justify-around items-center">
+  <!-- شريط التنقل السفلي -->
+  <nav class="fixed bottom-0 inset-x-0 t-card backdrop-blur-lg border-t z-40 px-1 py-1.5 flex justify-around items-center">
     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 py-1 px-2 text-blue-500">
-      <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-      <span class="text-[9px] font-bold">الرئيسية</span>
+      <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span class="text-[9px] font-bold">الرئيسية</span>
     </button>
     <button onclick="switchTab('pos')" id="nav-pos" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
-      <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-      <span class="text-[9px] font-medium">البيع POS</span>
+      <i data-lucide="shopping-cart" class="w-4 h-4"></i><span class="text-[9px] font-medium">البيع POS</span>
     </button>
     <button onclick="switchTab('products')" id="nav-products" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
-      <i data-lucide="package" class="w-4 h-4"></i>
-      <span class="text-[9px] font-medium">المخزن</span>
+      <i data-lucide="package" class="w-4 h-4"></i><span class="text-[9px] font-medium">المخزن</span>
     </button>
     <button onclick="switchTab('services')" id="nav-services" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
-      <i data-lucide="antenna" class="w-4 h-4"></i>
-      <span class="text-[9px] font-medium">الصيانة</span>
+      <i data-lucide="antenna" class="w-4 h-4"></i><span class="text-[9px] font-medium">الصيانة</span>
     </button>
     <button onclick="switchTab('expenses')" id="nav-expenses" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
-      <i data-lucide="wallet" class="w-4 h-4"></i>
-      <span class="text-[9px] font-medium">الخزينة</span>
+      <i data-lucide="wallet" class="w-4 h-4"></i><span class="text-[9px] font-medium">الخزينة</span>
     </button>
     <button onclick="switchTab('users')" id="nav-users" class="flex flex-col items-center gap-1 py-1 px-2 opacity-60">
-      <i data-lucide="users" class="w-4 h-4"></i>
-      <span class="text-[9px] font-medium">الموظفين</span>
+      <i data-lucide="users" class="w-4 h-4"></i><span class="text-[9px] font-medium">الموظفين</span>
     </button>
   </nav>
 
-  <!-- ==================== النوافذ المنبثقة (Modals) ==================== -->
+  <!-- ==================== النوافذ المنبثقة ==================== -->
 
   <!-- نافذة الثيمات -->
   <div id="modal-theme" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-    <div class="theme-card border w-full max-w-sm rounded-3xl p-5 space-y-3">
+    <div class="t-card border w-full max-w-sm rounded-3xl p-5 space-y-3">
       <div class="flex justify-between items-center pb-2 border-b">
-        <h3 class="text-xs font-bold flex items-center gap-1.5">
-          <i data-lucide="palette" class="w-4 h-4 text-amber-400"></i> مظهر وثيم التطبيق
-        </h3>
+        <h3 class="text-xs font-bold flex items-center gap-1.5"><i data-lucide="palette" class="w-4 h-4 text-amber-400"></i> مظهر التطبيق</h3>
         <button onclick="closeModal('modal-theme')" class="opacity-60 text-lg">✕</button>
       </div>
-
-      <div class="space-y-2 pt-1">
-        <button onclick="applyTheme('default')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-slate-900 text-white">
-          <span>الكحلي الليلي (الافتراضي)</span>
-          <span class="w-4 h-4 rounded-full bg-blue-600"></span>
-        </button>
-        <button onclick="applyTheme('emerald')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-emerald-950 text-emerald-100">
-          <span>الأخضر الزمردي (ستايل الكاشير)</span>
-          <span class="w-4 h-4 rounded-full bg-emerald-500"></span>
-        </button>
-        <button onclick="applyTheme('indigo')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-indigo-950 text-indigo-100">
-          <span>الأزرق الملكي (Indigo)</span>
-          <span class="w-4 h-4 rounded-full bg-indigo-500"></span>
-        </button>
-        <button onclick="applyTheme('oled')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-black text-white">
-          <span>أسود فحم (OLED توفير البطارية)</span>
-          <span class="w-4 h-4 rounded-full bg-slate-600"></span>
-        </button>
-        <button onclick="applyTheme('light')" class="w-full p-3 rounded-2xl border text-right flex items-center justify-between text-xs font-bold bg-slate-100 text-slate-900">
-          <span>النهاري الفاتح (Light Mode)</span>
-          <span class="w-4 h-4 rounded-full bg-blue-500"></span>
-        </button>
+      <div class="space-y-2 pt-1 text-xs font-bold">
+        <button onclick="applyTheme('default')" class="w-full p-2.5 rounded-xl border text-right flex justify-between bg-slate-900 text-white"><span>الكحلي الليلي</span><span class="w-3.5 h-3.5 rounded-full bg-blue-600"></span></button>
+        <button onclick="applyTheme('emerald')" class="w-full p-2.5 rounded-xl border text-right flex justify-between bg-emerald-950 text-emerald-100"><span>الأخضر الزمردي</span><span class="w-3.5 h-3.5 rounded-full bg-emerald-500"></span></button>
+        <button onclick="applyTheme('indigo')" class="w-full p-2.5 rounded-xl border text-right flex justify-between bg-indigo-950 text-indigo-100"><span>الأزرق الملكي</span><span class="w-3.5 h-3.5 rounded-full bg-indigo-500"></span></button>
+        <button onclick="applyTheme('oled')" class="w-full p-2.5 rounded-xl border text-right flex justify-between bg-black text-white"><span>أسود فحم (OLED)</span><span class="w-3.5 h-3.5 rounded-full bg-slate-600"></span></button>
+        <button onclick="applyTheme('light')" class="w-full p-2.5 rounded-xl border text-right flex justify-between bg-slate-100 text-slate-900"><span>النهاري الفاتح</span><span class="w-3.5 h-3.5 rounded-full bg-blue-500"></span></button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة إضافة موظف جديد -->
-  <div id="modal-add-user" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+  <!-- إضافة صنف جديد (المصححة 100%) -->
+  <div id="modal-add-product" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
+    <div class="t-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b">
-        <h3 class="text-xs font-bold">إضافة موظف وتحديد الصلاحيات</h3>
-        <button onclick="closeModal('modal-add-user')" class="opacity-60 text-lg">✕</button>
+        <h3 class="text-xs font-bold">إضافة صنف جديد للمخزن</h3>
+        <button onclick="closeModal('modal-add-product')" class="opacity-60 text-lg">✕</button>
       </div>
-
       <div>
-        <label class="opacity-75 text-[10px] block mb-1">اسم الموظف بالكامل</label>
-        <input type="text" id="new-user-fullname" placeholder="مثال: أحمد محمود" class="w-full theme-subcard border rounded-xl p-2.5 text-xs">
+        <label class="opacity-75 text-[10px] block mb-1">اسم الصنف (مطلوب)</label>
+        <input type="text" id="new-prod-name" placeholder="مثال: رسيفر استرا HD" class="w-full t-sub border rounded-xl p-2.5 text-xs">
       </div>
-
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="opacity-75 text-[10px] block mb-1">اسم المستخدم</label>
-          <input type="text" id="new-user-username" placeholder="ahmed" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+          <label class="opacity-75 text-[10px] block mb-1">سعر الشراء (التكلفة)</label>
+          <input type="number" id="new-prod-cost" placeholder="0" class="w-full t-sub border rounded-xl p-2 text-xs">
         </div>
         <div>
-          <label class="opacity-75 text-[10px] block mb-1">رمز الدخول (PIN)</label>
-          <input type="text" id="new-user-pin" placeholder="5555" maxlength="6" inputmode="numeric" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+          <label class="opacity-75 text-[10px] block mb-1">سعر البيع (مطلوب)</label>
+          <input type="number" id="new-prod-price" placeholder="0" class="w-full t-sub border rounded-xl p-2 text-xs">
         </div>
       </div>
-
-      <div class="pt-2 border-t space-y-2">
-        <span class="text-[11px] font-bold block mb-1 text-amber-400">حدد الصلاحيات المسموح بها لهذا الموظف:</span>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="perm-add-prod" class="w-4 h-4 rounded text-blue-600">
-          <span>السماح بإضافة أصناف جديدة للمخزن</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="perm-edit-prod" class="w-4 h-4 rounded text-blue-600">
-          <span class="font-bold text-blue-400">السماح بتعديل بيانات وأسعار الأصناف</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="perm-del-prod" class="w-4 h-4 rounded text-rose-600">
-          <span class="text-rose-400 font-bold">السماح بحذف الأصناف من المخزن</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="perm-cats" class="w-4 h-4 rounded text-blue-600">
-          <span>إدارة وتعديل أقسام المحل</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="perm-reports" class="w-4 h-4 rounded text-blue-600">
-          <span>مشاهدة الأرباح وأسعار التكلفة</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="perm-discounts" class="w-4 h-4 rounded text-blue-600">
-          <span>السماح بخصومات في الفواتير</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="perm-expenses" class="w-4 h-4 rounded text-blue-600">
-          <span>تسجيل وصرف مبالغ من الخزينة</span>
-        </label>
-      </div>
-
-      <button onclick="saveNewUser()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white shadow-lg shadow-blue-600/30">
-        حفظ وتفعيل حساب الموظف
-      </button>
-    </div>
-  </div>
-
-  <!-- نافذة تعديل موظف وصلاحياته الحالية -->
-  <div id="modal-edit-user" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center pb-2 border-b">
-        <h3 class="text-xs font-bold flex items-center gap-1.5">
-          <i data-lucide="edit-3" class="w-4 h-4 text-blue-400"></i> تعديل بيانات وصلاحيات الموظف
-        </h3>
-        <button onclick="closeModal('modal-edit-user')" class="opacity-60 text-lg">✕</button>
-      </div>
-
-      <input type="hidden" id="edit-user-id">
-
-      <div>
-        <label class="opacity-75 text-[10px] block mb-1">اسم الموظف</label>
-        <input type="text" id="edit-user-fullname" class="w-full theme-subcard border rounded-xl p-2.5 text-xs">
-      </div>
-
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="opacity-75 text-[10px] block mb-1">اسم المستخدم</label>
-          <input type="text" id="edit-user-username" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+          <label class="opacity-75 text-[10px] block mb-1">الكمية</label>
+          <input type="number" id="new-prod-stock" value="1" class="w-full t-sub border rounded-xl p-2 text-xs">
         </div>
         <div>
-          <label class="opacity-75 text-[10px] block mb-1">رمز الدخول (PIN)</label>
-          <input type="text" id="edit-user-pin" maxlength="6" inputmode="numeric" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+          <label class="opacity-75 text-[10px] block mb-1">تنبيه النواقص عند</label>
+          <input type="number" id="new-prod-alert" value="2" class="w-full t-sub border rounded-xl p-2 text-xs">
         </div>
       </div>
-
-      <!-- مربعات الصلاحيات لتعديلها بلمسة واحدة -->
-      <div class="pt-2 border-t space-y-2">
-        <span class="text-[11px] font-bold block mb-1 text-amber-400">تعديل الصلاحيات (علّم صح للإضافة، أو أزل العلامة للحذف):</span>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="edit-perm-add-prod" class="w-4 h-4 rounded text-blue-600">
-          <span>السماح بإضافة أصناف جديدة للمخزن</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="edit-perm-edit-prod" class="w-4 h-4 rounded text-blue-600">
-          <span class="font-bold text-blue-400">السماح بتعديل بيانات وأسعار الأصناف</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="edit-perm-del-prod" class="w-4 h-4 rounded text-rose-600">
-          <span class="text-rose-400 font-bold">السماح بحذف الأصناف من المخزن</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="edit-perm-cats" class="w-4 h-4 rounded text-blue-600">
-          <span>إدارة وتعديل أقسام المحل</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="edit-perm-reports" class="w-4 h-4 rounded text-blue-600">
-          <span>مشاهدة الأرباح وأسعار التكلفة</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="edit-perm-discounts" class="w-4 h-4 rounded text-blue-600">
-          <span>السماح بخصومات في الفواتير</span>
-        </label>
-        <label class="flex items-center gap-2 p-2 theme-subcard border rounded-xl text-xs cursor-pointer">
-          <input type="checkbox" id="edit-perm-expenses" class="w-4 h-4 rounded text-blue-600">
-          <span>تسجيل وصرف مبالغ من الخزينة</span>
-        </label>
+      <div>
+        <label class="opacity-75 text-[10px] block mb-1">القسم</label>
+        <select id="new-prod-cat" class="w-full t-sub border rounded-xl p-2 text-xs"></select>
       </div>
-
-      <button onclick="saveEditUser()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-xs text-white shadow-lg shadow-emerald-600/30">
-        حفظ تعديل الصلاحيات
-      </button>
+      <button onclick="saveNewProduct()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white shadow-lg">حفظ الصنف في المخزن</button>
     </div>
   </div>
 
-  <!-- نافذة تعديل بيانات صنف موجود -->
+  <!-- تعديل صنف -->
   <div id="modal-edit-product" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+    <div class="t-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b">
         <h3 class="text-xs font-bold">تعديل بيانات الصنف</h3>
         <button onclick="closeModal('modal-edit-product')" class="opacity-60 text-lg">✕</button>
@@ -535,323 +341,218 @@
       <input type="hidden" id="edit-prod-id">
       <div>
         <label class="opacity-75 text-[10px] block mb-1">اسم الصنف</label>
-        <input type="text" id="edit-prod-name" class="w-full theme-subcard border rounded-xl p-2.5 text-xs">
+        <input type="text" id="edit-prod-name" class="w-full t-sub border rounded-xl p-2.5 text-xs">
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="opacity-75 text-[10px] block mb-1">سعر الشراء (التكلفة)</label>
-          <input type="number" id="edit-prod-cost" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+          <label class="opacity-75 text-[10px] block mb-1">سعر الشراء</label>
+          <input type="number" id="edit-prod-cost" class="w-full t-sub border rounded-xl p-2 text-xs">
         </div>
         <div>
           <label class="opacity-75 text-[10px] block mb-1">سعر البيع</label>
-          <input type="number" id="edit-prod-price" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+          <input type="number" id="edit-prod-price" class="w-full t-sub border rounded-xl p-2 text-xs">
         </div>
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="opacity-75 text-[10px] block mb-1">الكمية الحالية</label>
-          <input type="number" id="edit-prod-stock" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+          <input type="number" id="edit-prod-stock" class="w-full t-sub border rounded-xl p-2 text-xs">
         </div>
         <div>
           <label class="opacity-75 text-[10px] block mb-1">تنبيه النواقص عند</label>
-          <input type="number" id="edit-prod-alert" class="w-full theme-subcard border rounded-xl p-2 text-xs">
+          <input type="number" id="edit-prod-alert" class="w-full t-sub border rounded-xl p-2 text-xs">
         </div>
       </div>
       <div>
         <label class="opacity-75 text-[10px] block mb-1">القسم</label>
-        <select id="edit-prod-cat" class="w-full theme-subcard border rounded-xl p-2 text-xs"></select>
+        <select id="edit-prod-cat" class="w-full t-sub border rounded-xl p-2 text-xs"></select>
       </div>
-      <button onclick="saveEditProduct()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-xs text-white">تحديث بيانات الصنف</button>
+      <button onclick="saveEditProduct()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-xs text-white">تحديث الصنف</button>
     </div>
   </div>
 
-  <!-- نافذة إدارة الأقسام -->
+  <!-- إدارة الأقسام -->
   <div id="modal-manage-categories" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3.5 max-h-[85vh] overflow-y-auto">
+    <div class="t-card border w-full max-w-md rounded-3xl p-5 space-y-3.5 max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b">
-        <h3 class="text-xs font-bold flex items-center gap-1.5">
-          <i data-lucide="layers" class="w-4 h-4 text-amber-400"></i> إدارة وتعديل الأقسام
-        </h3>
+        <h3 class="text-xs font-bold flex items-center gap-1.5"><i data-lucide="layers" class="w-4 h-4 text-amber-400"></i> الأقسام</h3>
         <button onclick="closeModal('modal-manage-categories')" class="opacity-60 text-lg">✕</button>
       </div>
-
       <div class="flex gap-2">
-        <input type="text" id="new-cat-name-input" placeholder="اسم القسم الجديد..." 
-               class="flex-1 theme-subcard border rounded-xl p-2.5 text-xs focus:outline-none focus:border-blue-500">
-        <button onclick="saveNewCategory()" class="px-4 py-2.5 bg-amber-600 hover:bg-amber-500 rounded-xl font-bold text-xs text-white shadow-md">
-          إضافة
-        </button>
+        <input type="text" id="new-cat-name-input" placeholder="اسم القسم الجديد..." class="flex-1 t-sub border rounded-xl p-2 text-xs focus:outline-none">
+        <button onclick="saveNewCategory()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-xl font-bold text-xs text-white">إضافة</button>
       </div>
-
-      <div class="space-y-2 pt-2">
-        <span class="text-[10px] opacity-75 block font-bold">الأقسام الحالية بالمحل:</span>
-        <div id="categories-list-container" class="space-y-1.5">
-          <div class="text-center py-4 text-xs opacity-60">جاري تحميل الأقسام...</div>
-        </div>
-      </div>
+      <div id="categories-list-container" class="space-y-1.5 pt-2"></div>
     </div>
   </div>
 
-  <!-- نافذة إضافة منتج -->
-  <div id="modal-add-product" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+  <!-- إضافة موظف -->
+  <div id="modal-add-user" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
+    <div class="t-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b">
-        <h3 class="text-xs font-bold">إضافة صنف جديد للمخزن</h3>
-        <button onclick="closeModal('modal-add-product')" class="opacity-60 text-lg">✕</button>
+        <h3 class="text-xs font-bold">إضافة موظف جديد</h3>
+        <button onclick="closeModal('modal-add-user')" class="opacity-60 text-lg">✕</button>
       </div>
-      <div>
-        <label class="opacity-75 text-[10px] block mb-1">اسم الصنف</label>
-        <input type="text" id="new-prod-name" placeholder="مثال: رسيفر استرا HD" class="w-full theme-subcard border rounded-xl p-2.5 text-xs">
-      </div>
+      <input type="text" id="new-user-fullname" placeholder="الاسم الكامل" class="w-full t-sub border rounded-xl p-2 text-xs">
       <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="opacity-75 text-[10px] block mb-1">سعر الشراء (التكلفة)</label>
-          <input type="number" id="new-prod-cost" placeholder="0" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-        </div>
-        <div>
-          <label class="opacity-75 text-[10px] block mb-1">سعر البيع</label>
-          <input type="number" id="new-prod-price" placeholder="0" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-        </div>
+        <input type="text" id="new-user-username" placeholder="اسم المستخدم" class="w-full t-sub border rounded-xl p-2 text-xs">
+        <input type="text" id="new-user-pin" placeholder="PIN" maxlength="6" inputmode="numeric" class="w-full t-sub border rounded-xl p-2 text-xs">
       </div>
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="opacity-75 text-[10px] block mb-1">الكمية</label>
-          <input type="number" id="new-prod-stock" value="1" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-        </div>
-        <div>
-          <label class="opacity-75 text-[10px] block mb-1">تنبيه النواقص عند</label>
-          <input type="number" id="new-prod-alert" value="2" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-        </div>
+      <div class="pt-2 border-t space-y-1.5 text-xs">
+        <span class="text-[11px] font-bold block text-amber-400">الصلاحيات المحددة:</span>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="perm-add-prod" class="w-4 h-4"><span>إضافة أصناف</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="perm-edit-prod" class="w-4 h-4"><span class="text-blue-400 font-bold">تعديل أصناف وأسعار</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="perm-del-prod" class="w-4 h-4"><span class="text-rose-400 font-bold">حذف أصناف</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="perm-cats" class="w-4 h-4"><span>إدارة الأقسام</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="perm-reports" class="w-4 h-4"><span>مشاهدة الأرباح والتكلفة</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="perm-discounts" class="w-4 h-4"><span>خصومات الفواتير</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="perm-expenses" class="w-4 h-4"><span>تسجيل مصروفات</span></label>
       </div>
-      <div>
-        <label class="opacity-75 text-[10px] block mb-1">القسم</label>
-        <select id="new-prod-cat" class="w-full theme-subcard border rounded-xl p-2 text-xs"></select>
-      </div>
-      <button onclick="saveNewProduct()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white mt-1">حفظ الصنف في المخزن</button>
+      <button onclick="saveNewUser()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white">حفظ الموظف</button>
     </div>
   </div>
 
-  <!-- نافذة طلب صيانة -->
+  <!-- تعديل صلاحيات الموظف -->
+  <div id="modal-edit-user" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
+    <div class="t-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b">
+        <h3 class="text-xs font-bold flex items-center gap-1.5"><i data-lucide="edit-3" class="w-4 h-4 text-blue-400"></i> تعديل صلاحيات الموظف</h3>
+        <button onclick="closeModal('modal-edit-user')" class="opacity-60 text-lg">✕</button>
+      </div>
+      <input type="hidden" id="edit-user-id">
+      <input type="text" id="edit-user-fullname" class="w-full t-sub border rounded-xl p-2 text-xs">
+      <div class="grid grid-cols-2 gap-2">
+        <input type="text" id="edit-user-username" class="w-full t-sub border rounded-xl p-2 text-xs">
+        <input type="text" id="edit-user-pin" maxlength="6" inputmode="numeric" class="w-full t-sub border rounded-xl p-2 text-xs">
+      </div>
+      <div class="pt-2 border-t space-y-1.5 text-xs">
+        <span class="text-[11px] font-bold block text-amber-400">تعديل الصلاحيات:</span>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="edit-perm-add-prod" class="w-4 h-4"><span>إضافة أصناف</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="edit-perm-edit-prod" class="w-4 h-4"><span class="text-blue-400 font-bold">تعديل أصناف وأسعار</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="edit-perm-del-prod" class="w-4 h-4"><span class="text-rose-400 font-bold">حذف أصناف</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="edit-perm-cats" class="w-4 h-4"><span>إدارة الأقسام</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="edit-perm-reports" class="w-4 h-4"><span>مشاهدة الأرباح والتكلفة</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="edit-perm-discounts" class="w-4 h-4"><span>خصومات الفواتير</span></label>
+        <label class="flex items-center gap-2 p-1.5 t-sub border rounded-xl cursor-pointer"><input type="checkbox" id="edit-perm-expenses" class="w-4 h-4"><span>تسجيل مصروفات</span></label>
+      </div>
+      <button onclick="saveEditUser()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-xs text-white">حفظ التعديلات</button>
+    </div>
+  </div>
+
+  <!-- إضافة صيانة -->
   <div id="modal-add-service" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
+    <div class="t-card border w-full max-w-md rounded-3xl p-5 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center pb-2 border-b">
-        <h3 class="text-xs font-bold">تسجيل أمر تركيب / صيانة</h3>
+        <h3 class="text-xs font-bold">تسجيل طلب صيانة</h3>
         <button onclick="closeModal('modal-add-service')" class="opacity-60 text-lg">✕</button>
       </div>
       <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="opacity-75 text-[10px] block mb-1">اسم العميل</label>
-          <input type="text" id="srv-cust-name" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-        </div>
-        <div>
-          <label class="opacity-75 text-[10px] block mb-1">رقم الهاتف</label>
-          <input type="tel" id="srv-cust-phone" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-        </div>
+        <input type="text" id="srv-cust-name" placeholder="اسم العميل" class="w-full t-sub border rounded-xl p-2 text-xs">
+        <input type="tel" id="srv-cust-phone" placeholder="رقم الهاتف" class="w-full t-sub border rounded-xl p-2 text-xs">
       </div>
-      <div>
-        <label class="opacity-75 text-[10px] block mb-1">نوع الخدمة</label>
-        <select id="srv-type" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-          <option>تركيب وضبط طبق دش</option>
-          <option>صيانة وتنزيل قنوات رسيفر</option>
-          <option>تركيب وصيانة كاميرات مراقبة</option>
-          <option>تركيب شاشة وحامل جداري</option>
-          <option>تمديد كابلات وتوصيلات شبكة</option>
-        </select>
-      </div>
-      <div>
-        <label class="opacity-75 text-[10px] block mb-1">العنوان والملاحظات</label>
-        <input type="text" id="srv-address" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-      </div>
+      <select id="srv-type" class="w-full t-sub border rounded-xl p-2 text-xs">
+        <option>تركيب وضبط طبق دش</option>
+        <option>صيانة وتنزيل قنوات رسيفر</option>
+        <option>تركيب وصيانة كاميرات مراقبة</option>
+        <option>تركيب شاشة وحامل جداري</option>
+        <option>تمديد كابلات وتوصيلات شبكة</option>
+      </select>
+      <input type="text" id="srv-address" placeholder="العنوان والملاحظات" class="w-full t-sub border rounded-xl p-2 text-xs">
       <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="opacity-75 text-[10px] block mb-1">المبلغ المطلوب</label>
-          <input type="number" id="srv-charge" placeholder="0" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-        </div>
-        <div>
-          <label class="opacity-75 text-[10px] block mb-1">اسم الفني</label>
-          <input type="text" id="srv-tech" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-        </div>
+        <input type="number" id="srv-charge" placeholder="المبلغ المطلوب" class="w-full t-sub border rounded-xl p-2 text-xs">
+        <input type="text" id="srv-tech" placeholder="اسم الفني" class="w-full t-sub border rounded-xl p-2 text-xs">
       </div>
-      <button onclick="saveNewServiceOrder()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white">تسجيل أمر الصيانة</button>
+      <button onclick="saveNewServiceOrder()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-xs text-white">حفظ طلب الصيانة</button>
     </div>
   </div>
 
-  <!-- نافذة تسجيل مصروف -->
+  <!-- تسجيل مصروف -->
   <div id="modal-add-expense" class="fixed inset-0 bg-black/80 z-50 hidden flex items-end sm:items-center justify-center p-3">
-    <div class="theme-card border w-full max-w-md rounded-3xl p-5 space-y-3">
+    <div class="t-card border w-full max-w-md rounded-3xl p-5 space-y-3">
       <div class="flex justify-between items-center pb-2 border-b">
         <h3 class="text-xs font-bold">تسجيل مصروف من الخزينة</h3>
         <button onclick="closeModal('modal-add-expense')" class="opacity-60 text-lg">✕</button>
       </div>
-      <div>
-        <label class="opacity-75 text-[10px] block mb-1">بند المصروف</label>
-        <select id="exp-category" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-          <option>كهرباء ومرافق</option>
-          <option>إيجار المحل</option>
-          <option>أدوات ومستهلكات تركيب</option>
-          <option>بوفيه وضيافة ومياه</option>
-          <option>سحب شخصي (صاحب المحل)</option>
-          <option>مصروفات أخرى</option>
-        </select>
-      </div>
-      <div>
-        <label class="opacity-75 text-[10px] block mb-1">المبلغ (ج.م)</label>
-        <input type="number" id="exp-amount" placeholder="0" class="w-full theme-subcard border rounded-xl p-2 text-xs">
-      </div>
-      <div>
-        <label class="opacity-75 text-[10px] block mb-1">بيان / ملاحظات</label>
-        <input type="text" id="exp-notes" placeholder="ملاحظات..." class="w-full theme-subcard border rounded-xl p-2 text-xs">
-      </div>
-      <button onclick="saveNewExpense()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 rounded-xl font-bold text-xs text-white">تأكيد خصم المصروف</button>
+      <select id="exp-category" class="w-full t-sub border rounded-xl p-2 text-xs">
+        <option>كهرباء ومرافق</option><option>إيجار المحل</option><option>أدوات ومستهلكات</option><option>بوفيه وضيافة</option><option>سحب شخصي</option><option>أخرى</option>
+      </select>
+      <input type="number" id="exp-amount" placeholder="المبلغ (ج.م)" class="w-full t-sub border rounded-xl p-2 text-xs">
+      <input type="text" id="exp-notes" placeholder="ملاحظات..." class="w-full t-sub border rounded-xl p-2 text-xs">
+      <button onclick="saveNewExpense()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 rounded-xl font-bold text-xs text-white">تأكيد الخصم</button>
     </div>
   </div>
 
-  <!-- ==================== كود الجافاسكربت ==================== -->
+  <!-- كود الجافاسكربت -->
   <script>
     const SUPABASE_URL = "https://mvzrkiqypxnfrxnocole.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12enJraXF5cHhuZnJ4bm9jb2xlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyMzUwMjcsImV4cCI6MjEwNzgxMTAyN30.b8B-JsyqJnCjx7gNsLOtPbLWnx4SpBKMBf06nRSxQT8";
     
     let db = null;
-    try {
-      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch(e) { console.error(e); }
+    try { db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){}
 
-    let currentUser = null;
-    let allProducts = [];
-    let allCategories = [];
-    let allUsers = [];
-    let currentCart = [];
+    let currentUser = null, allProducts = [], allCategories = [], allUsers = [], currentCart = [];
 
-    // مراقبة الشبكة
     function updateNetworkStatus() {
       const isOnline = navigator.onLine;
       const badge = document.getElementById('app-status-badge');
       const bar = document.getElementById('offline-bar');
       const queue = JSON.parse(localStorage.getItem('offline_invoices') || '[]');
-
       if (isOnline) {
         badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> متصل بالسيرفر';
         badge.className = 'text-[9px] text-emerald-400 flex items-center gap-1 font-bold';
         bar.classList.add('hidden');
         if (queue.length > 0) syncOfflineQueue();
       } else {
-        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> وضع أوفلاين';
+        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> أوفلاين';
         badge.className = 'text-[9px] text-amber-400 flex items-center gap-1 font-bold';
         bar.classList.remove('hidden');
       }
-      updateQueueBadge();
-    }
-
-    function updateQueueBadge() {
-      const queue = JSON.parse(localStorage.getItem('offline_invoices') || '[]');
-      const badge = document.getElementById('sync-badge');
-      if (queue.length > 0) {
-        badge.innerText = queue.length;
-        badge.classList.remove('hidden');
-      } else {
-        badge.classList.add('hidden');
-      }
+      const b = document.getElementById('sync-badge');
+      if (queue.length > 0) { b.innerText = queue.length; b.classList.remove('hidden'); } else b.classList.add('hidden');
     }
 
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
 
-    // نظام الثيمات
-    function initTheme() {
-      const saved = localStorage.getItem('shop-theme') || 'default';
-      applyTheme(saved);
-    }
-
-    function applyTheme(themeName) {
-      if (themeName === 'default') {
-        document.documentElement.removeAttribute('data-theme');
-      } else {
-        document.documentElement.setAttribute('data-theme', themeName);
-      }
-      localStorage.setItem('shop-theme', themeName);
+    function initTheme() { applyTheme(localStorage.getItem('shop-theme') || 'default'); }
+    function applyTheme(name) {
+      if (name === 'default') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', name);
+      localStorage.setItem('shop-theme', name);
       closeModal('modal-theme');
     }
 
-    function openThemeModal() { document.getElementById('modal-theme').classList.remove('hidden'); }
-
-    // تسجيل الدخول
     async function handleLogin() {
       const pin = document.getElementById('login-pin').value.trim();
       const err = document.getElementById('login-error');
       if (!pin) return;
 
       if (pin === '1896') {
-        let ownerData = null;
-        if (navigator.onLine && db) {
-          try {
-            let { data } = await db.from('app_users').select('*').eq('role', 'owner').maybeSingle();
-            if (!data) {
-              const { data: newUser } = await db.from('app_users').upsert({
-                username: 'admin',
-                pin: '1896',
-                full_name: 'صاحب المحل (المدير العام)',
-                role: 'owner',
-                can_view_reports: true,
-                can_add_product: true,
-                can_edit_product: true,
-                can_delete_product: true,
-                can_manage_categories: true,
-                can_give_discounts: true,
-                can_manage_expenses: true,
-                is_active: true
-              }).select().single();
-              data = newUser;
-            } else if (data.pin !== '1896') {
-              await db.from('app_users').update({ pin: '1896' }).eq('id', data.id);
-              data.pin = '1896';
-            }
-            ownerData = data;
-          } catch(e) {}
-        }
-
-        currentUser = ownerData || {
-          username: 'admin',
-          pin: '1896',
-          full_name: 'صاحب المحل',
-          role: 'owner',
-          can_view_reports: true,
-          can_add_product: true,
-          can_edit_product: true,
-          can_delete_product: true,
-          can_manage_categories: true,
-          can_give_discounts: true,
-          can_manage_expenses: true
+        currentUser = {
+          username: 'admin', pin: '1896', full_name: 'صاحب المحل (المدير)', role: 'owner',
+          can_view_reports: true, can_add_product: true, can_edit_product: true, can_delete_product: true,
+          can_manage_categories: true, can_give_discounts: true, can_manage_expenses: true
         };
-
-        localStorage.setItem('cached_owner', JSON.stringify(currentUser));
         applyUserPermissions(currentUser);
         document.getElementById('login-modal').classList.add('hidden');
-        loadDashboardData();
-        loadCategories();
-        loadProducts();
+        loadDashboardData(); loadCategories(); loadProducts();
         return;
       }
 
-      let foundUser = null;
+      let found = null;
       if (navigator.onLine && db) {
-        try {
-          const { data } = await db.from('app_users').select('*').eq('pin', pin).eq('is_active', true).maybeSingle();
-          foundUser = data;
-        } catch(e){}
+        try { const { data } = await db.from('app_users').select('*').eq('pin', pin).eq('is_active', true).maybeSingle(); found = data; } catch(e){}
+      }
+      if (!found) {
+        const cached = JSON.parse(localStorage.getItem('cached_users') || '[]');
+        found = cached.find(u => u.pin === pin && u.is_active);
       }
 
-      if (!foundUser) {
-        const cachedUsers = JSON.parse(localStorage.getItem('cached_users') || '[]');
-        foundUser = cachedUsers.find(u => u.pin === pin && u.is_active);
-      }
-
-      if (foundUser) {
-        currentUser = foundUser;
-        applyUserPermissions(foundUser);
+      if (found) {
+        currentUser = found;
+        applyUserPermissions(found);
         document.getElementById('login-modal').classList.add('hidden');
-        loadDashboardData();
-        loadCategories();
-        loadProducts();
+        loadDashboardData(); loadCategories(); loadProducts();
       } else {
         err.classList.remove('hidden');
       }
@@ -860,20 +561,13 @@
     function applyUserPermissions(user) {
       document.getElementById('current-user-name').innerText = user.full_name;
       document.getElementById('current-user-role').innerText = user.role === 'owner' ? 'صاحب المحل' : 'موظف';
-
       const isOwner = user.role === 'owner';
-      const canReports = isOwner || (user.can_view_reports === true);
-      const canAddProd = isOwner || (user.can_add_product === true);
-      const canCats = isOwner || (user.can_manage_categories === true);
-      const canDiscounts = isOwner || (user.can_give_discounts === true);
-      const canExpenses = isOwner || (user.can_manage_expenses === true);
-
-      document.getElementById('card-stat-profit').style.display = canReports ? 'block' : 'none';
-      document.getElementById('stock-val-card').style.display = canReports ? 'flex' : 'none';
-      document.getElementById('btn-add-product').style.display = canAddProd ? 'flex' : 'none';
-      document.getElementById('btn-manage-cats').style.display = canCats ? 'flex' : 'none';
-      document.getElementById('pos-discount-box').style.display = canDiscounts ? 'flex' : 'none';
-      document.getElementById('btn-add-expense').style.display = canExpenses ? 'flex' : 'none';
+      document.getElementById('card-stat-profit').style.display = (isOwner || user.can_view_reports === true) ? 'block' : 'none';
+      document.getElementById('stock-val-card').style.display = (isOwner || user.can_view_reports === true) ? 'flex' : 'none';
+      document.getElementById('btn-add-product').style.display = (isOwner || user.can_add_product === true) ? 'flex' : 'none';
+      document.getElementById('btn-manage-cats').style.display = (isOwner || user.can_manage_categories === true) ? 'flex' : 'none';
+      document.getElementById('pos-discount-box').style.display = (isOwner || user.can_give_discounts === true) ? 'flex' : 'none';
+      document.getElementById('btn-add-expense').style.display = (isOwner || user.can_manage_expenses === true) ? 'flex' : 'none';
       document.getElementById('nav-users').style.display = isOwner ? 'flex' : 'none';
     }
 
@@ -884,28 +578,13 @@
     }
 
     function switchTab(tabId) {
-      if (tabId === 'users' && currentUser?.role !== 'owner') {
-        alert('هذا القسم خاص بصاحب المحل فقط');
-        return;
-      }
-
+      if (tabId === 'users' && currentUser?.role !== 'owner') return alert('خاص بصاحب المحل فقط');
       ['dashboard', 'pos', 'products', 'services', 'expenses', 'users'].forEach(t => {
-        const v = document.getElementById(`view-${t}`);
-        const n = document.getElementById(`nav-${t}`);
-        if (v) v.classList.add('hidden');
-        if (n) {
-          n.classList.remove('text-blue-500');
-          n.classList.add('opacity-60');
-        }
+        document.getElementById(`view-${t}`)?.classList.add('hidden');
+        document.getElementById(`nav-${t}`)?.classList.replace('text-blue-500', 'opacity-60');
       });
-
-      const activeView = document.getElementById(`view-${tabId}`);
-      const activeNav = document.getElementById(`nav-${tabId}`);
-      if (activeView) activeView.classList.remove('hidden');
-      if (activeNav) {
-        activeNav.classList.remove('opacity-60');
-        activeNav.classList.add('text-blue-500');
-      }
+      document.getElementById(`view-${tabId}`)?.classList.remove('hidden');
+      document.getElementById(`nav-${tabId}`)?.classList.replace('opacity-60', 'text-blue-500');
 
       if (tabId === 'dashboard') loadDashboardData();
       if (tabId === 'products') { loadCategories(); loadProducts(); }
@@ -914,159 +593,100 @@
       if (tabId === 'users') loadUsers();
     }
 
-    // 1. لوحة البيانات
     async function loadDashboardData() {
       const today = new Date().toISOString().split('T')[0];
       let invoices = [];
-
       if (navigator.onLine && db) {
         try {
           const { data } = await db.from('invoices').select('*').gte('created_at', today);
-          if (data) {
-            invoices = data;
-            localStorage.setItem('cached_today_invoices', JSON.stringify(data));
-          }
+          if (data) { invoices = data; localStorage.setItem('cached_today_invoices', JSON.stringify(data)); }
         } catch(e){}
-      } else {
-        invoices = JSON.parse(localStorage.getItem('cached_today_invoices') || '[]');
-      }
+      } else invoices = JSON.parse(localStorage.getItem('cached_today_invoices') || '[]');
 
-      let salesTotal = invoices.reduce((acc, cur) => acc + Number(cur.final_total || 0), 0);
-      document.getElementById('stat-today-sales').innerText = salesTotal.toFixed(2) + ' ج.م';
+      const total = invoices.reduce((acc, c) => acc + Number(c.final_total || 0), 0);
+      document.getElementById('stat-today-sales').innerText = total.toFixed(2) + ' ج.م';
 
       const prods = allProducts.length > 0 ? allProducts : JSON.parse(localStorage.getItem('cached_products') || '[]');
-      const low = prods.filter(p => p.stock_quantity <= p.min_stock_alert);
-      document.getElementById('stat-low-stock').innerText = low.length + ' أصناف';
-
-      let costSum = prods.reduce((a, b) => a + (Number(b.cost_price || 0) * Number(b.stock_quantity || 0)), 0);
-      let sellSum = prods.reduce((a, b) => a + (Number(b.selling_price || 0) * Number(b.stock_quantity || 0)), 0);
+      document.getElementById('stat-low-stock').innerText = prods.filter(p => p.stock_quantity <= p.min_stock_alert).length + ' أصناف';
+      const costSum = prods.reduce((a, b) => a + (Number(b.cost_price || 0) * Number(b.stock_quantity || 0)), 0);
+      const sellSum = prods.reduce((a, b) => a + (Number(b.selling_price || 0) * Number(b.stock_quantity || 0)), 0);
       document.getElementById('stock-cost-total').innerText = costSum.toFixed(2) + ' ج.م';
       document.getElementById('stock-sell-total').innerText = sellSum.toFixed(2) + ' ج.م';
 
       const recent = invoices.slice(-4).reverse();
       const list = document.getElementById('recent-invoices-list');
-      if (recent && recent.length > 0) {
+      if (recent.length > 0) {
         list.innerHTML = recent.map(inv => `
-          <div class="flex items-center justify-between p-2.5 theme-subcard rounded-xl border text-xs">
-            <div>
-              <span class="font-bold">فاتورة #${inv.invoice_number || 'محلية'}</span>
-              <span class="opacity-75 block text-[10px]">${inv.customer_name || 'نقدي'}</span>
-            </div>
-            <div class="text-left">
-              <span class="font-bold text-emerald-400 block">${Number(inv.final_total).toFixed(2)} ج.م</span>
-              <span class="text-[9px] opacity-60">${inv.payment_method === 'cash' ? 'كاش' : 'محفظة/تحويل'}</span>
-            </div>
-          </div>
-        `).join('');
-      } else {
-        list.innerHTML = '<div class="text-center py-4 text-xs opacity-60">لا توجد مبيعات مسجلة اليوم</div>';
-      }
+          <div class="flex justify-between p-2 t-sub rounded-xl border text-xs">
+            <div><span class="font-bold">#${inv.invoice_number || 'محلية'}</span><span class="opacity-75 block text-[10px]">${inv.customer_name || 'نقدي'}</span></div>
+            <div class="text-left"><span class="font-bold text-emerald-400 block">${Number(inv.final_total).toFixed(2)} ج.م</span><span class="text-[9px] opacity-60">${inv.payment_method === 'cash' ? 'كاش' : 'محفظة'}</span></div>
+          </div>`).join('');
+      } else list.innerHTML = '<div class="text-center py-4 text-xs opacity-60">لا توجد مبيعات مسجلة اليوم</div>';
     }
 
-    // 2. إدارة الأقسام
     async function loadCategories() {
       if (navigator.onLine && db) {
         try {
-          const { data } = await db.from('categories').select('*').order('name', { ascending: true });
-          if (data) {
-            allCategories = data;
-            localStorage.setItem('cached_categories', JSON.stringify(data));
-          }
+          const { data } = await db.from('categories').select('*').order('name');
+          if (data && data.length > 0) { allCategories = data; localStorage.setItem('cached_categories', JSON.stringify(data)); }
         } catch(e){}
-      } else {
-        allCategories = JSON.parse(localStorage.getItem('cached_categories') || '[]');
       }
-      renderCategories(allCategories);
-      populateCategorySelects(allCategories);
-    }
-
-    function renderCategories(items) {
-      const container = document.getElementById('categories-list-container');
-      if (!container) return;
-      if (!items || items.length === 0) {
-        container.innerHTML = '<div class="text-center py-3 text-xs opacity-60">لا توجد أقسام مسجلة</div>';
-        return;
+      if (allCategories.length === 0) allCategories = JSON.parse(localStorage.getItem('cached_categories') || '[]');
+      if (allCategories.length === 0) allCategories = [{ name: 'أطباق دش ومستلزمات' }, { name: 'رسيفرات' }, { name: 'كاميرات مراقبة' }, { name: 'شاشات وحوامل' }, { name: 'كابلات وتوصيلات' }];
+      
+      const cList = document.getElementById('categories-list-container');
+      if (cList) {
+        const canCats = currentUser?.role === 'owner' || currentUser?.can_manage_categories === true;
+        cList.innerHTML = allCategories.map(c => `
+          <div class="flex justify-between p-2 t-sub border rounded-xl text-xs">
+            <span>${c.name}</span>
+            ${canCats ? `<div class="flex gap-1">
+              <button onclick="editCategory('${c.id}','${c.name}')" class="p-1 text-blue-400"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i></button>
+              <button onclick="deleteCategory('${c.id}','${c.name}')" class="p-1 text-rose-400"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            </div>` : ''}
+          </div>`).join('');
       }
 
-      const isOwner = currentUser?.role === 'owner';
-      const canCats = isOwner || (currentUser?.can_manage_categories === true);
-
-      container.innerHTML = items.map(cat => `
-        <div class="flex items-center justify-between p-2 theme-subcard border rounded-xl text-xs">
-          <span class="font-bold">${cat.name}</span>
-          ${canCats ? `
-            <div class="flex items-center gap-1">
-              <button onclick="editCategory('${cat.id}', '${cat.name}')" class="p-1.5 text-blue-400 hover:opacity-80 rounded-lg" title="تعديل">
-                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-              </button>
-              <button onclick="deleteCategory('${cat.id}', '${cat.name}')" class="p-1.5 text-rose-400 hover:opacity-80 rounded-lg" title="حذف">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-          ` : ''}
-        </div>
-      `).join('');
-
-      try { lucide.createIcons(); } catch(e){}
-    }
-
-    function populateCategorySelects(items) {
       const selects = [document.getElementById('new-prod-cat'), document.getElementById('edit-prod-cat')];
-      selects.forEach(select => {
-        if (!select) return;
-        select.innerHTML = items.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-      });
+      selects.forEach(s => { if (s) s.innerHTML = allCategories.map(c => `<option value="${c.name}">${c.name}</option>`).join(''); });
+      try { lucide.createIcons(); } catch(e){}
     }
 
     async function saveNewCategory() {
       const name = document.getElementById('new-cat-name-input').value.trim();
-      if (!name) return alert('يرجى كتابة اسم القسم');
-      if (navigator.onLine && db) {
-        await db.from('categories').insert([{ name }]);
-      }
+      if (!name) return alert('اكتب اسم القسم');
+      if (navigator.onLine && db) await db.from('categories').insert([{ name }]);
       allCategories.push({ id: 'cat_' + Date.now(), name });
       localStorage.setItem('cached_categories', JSON.stringify(allCategories));
       document.getElementById('new-cat-name-input').value = '';
       loadCategories();
     }
 
-    async function editCategory(id, currentName) {
-      const newName = prompt('أدخل الاسم الجديد للقسم:', currentName);
-      if (newName && newName.trim() && newName.trim() !== currentName) {
-        if (navigator.onLine && db) {
-          await db.from('categories').update({ name: newName.trim() }).eq('id', id);
-        }
-        const c = allCategories.find(item => item.id === id);
-        if (c) c.name = newName.trim();
+    async function editCategory(id, current) {
+      const n = prompt('الاسم الجديد للقسم:', current);
+      if (n && n.trim() && n.trim() !== current) {
+        if (navigator.onLine && db) await db.from('categories').update({ name: n.trim() }).eq('id', id);
+        const c = allCategories.find(i => i.id === id); if (c) c.name = n.trim();
         localStorage.setItem('cached_categories', JSON.stringify(allCategories));
-        loadCategories();
-        loadProducts();
+        loadCategories(); loadProducts();
       }
     }
 
     async function deleteCategory(id, name) {
-      if (!confirm(`هل أنت متأكد من حذف قسم "${name}"؟`)) return;
-      if (navigator.onLine && db) {
-        await db.from('categories').delete().eq('id', id);
-      }
+      if (!confirm(`حذف قسم "${name}"؟`)) return;
+      if (navigator.onLine && db) await db.from('categories').delete().eq('id', id);
       allCategories = allCategories.filter(c => c.id !== id);
       localStorage.setItem('cached_categories', JSON.stringify(allCategories));
       loadCategories();
     }
 
-    // 3. إدارة المخزن والمنتجات
     async function loadProducts() {
       if (navigator.onLine && db) {
         try {
           const { data } = await db.from('products').select('*').order('created_at', { ascending: false });
-          if (data) {
-            allProducts = data;
-            localStorage.setItem('cached_products', JSON.stringify(data));
-          }
+          if (data) { allProducts = data; localStorage.setItem('cached_products', JSON.stringify(data)); }
         } catch(e){}
-      } else {
-        allProducts = JSON.parse(localStorage.getItem('cached_products') || '[]');
-      }
+      } else allProducts = JSON.parse(localStorage.getItem('cached_products') || '[]');
       renderProducts(allProducts);
       populatePosSelect(allProducts);
     }
@@ -1074,17 +694,16 @@
     function renderProducts(items) {
       const container = document.getElementById('products-list-container');
       if (!items || items.length === 0) {
-        container.innerHTML = '<div class="text-center py-8 text-xs opacity-60">المخزن فارغ، أضف أول صنف!</div>';
+        container.innerHTML = '<div class="text-center py-6 text-xs opacity-60">المخزن فارغ، أضف أول صنف!</div>';
         return;
       }
-
       const isOwner = currentUser?.role === 'owner';
-      const canSeeCost = isOwner || (currentUser?.can_view_reports === true);
-      const canEdit = isOwner || (currentUser?.can_edit_product === true);
-      const canDelete = isOwner || (currentUser?.can_delete_product === true);
+      const canSeeCost = isOwner || currentUser?.can_view_reports === true;
+      const canEdit = isOwner || currentUser?.can_edit_product === true;
+      const canDel = isOwner || currentUser?.can_delete_product === true;
 
       container.innerHTML = items.map(p => `
-        <div class="theme-card border rounded-2xl p-3 flex items-center justify-between">
+        <div class="t-card border rounded-2xl p-3 flex justify-between items-center">
           <div class="flex-1 pl-2">
             <div class="flex items-center gap-1.5">
               <span class="text-xs font-bold">${p.name}</span>
@@ -1092,40 +711,57 @@
             </div>
             <div class="text-[10px] opacity-75 mt-0.5">${p.category} ${canSeeCost ? `| تكلفة: ${p.cost_price} ج.م` : ''}</div>
           </div>
-          
           <div class="flex items-center gap-2">
             <div class="text-left">
               <span class="text-xs font-extrabold text-blue-400 block">${p.selling_price} ج.م</span>
               <span class="text-[10px] opacity-75">مخزون: <strong>${p.stock_quantity}</strong></span>
             </div>
-
-            ${canEdit ? `
-              <button onclick="openEditProductModal('${p.id}')" class="p-2 text-blue-400 hover:opacity-80 rounded-xl" title="تعديل">
-                <i data-lucide="edit" class="w-4 h-4"></i>
-              </button>
-            ` : ''}
-
-            ${canDelete ? `
-              <button onclick="deleteProduct('${p.id}', '${p.name}')" class="p-2 text-rose-400 hover:opacity-80 rounded-xl" title="حذف">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
-            ` : ''}
+            ${canEdit ? `<button onclick="openEditProductModal('${p.id}')" class="p-1.5 text-blue-400 hover:opacity-80"><i data-lucide="edit" class="w-4 h-4"></i></button>` : ''}
+            ${canDel ? `<button onclick="deleteProduct('${p.id}','${p.name}')" class="p-1.5 text-rose-400 hover:opacity-80"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
           </div>
-        </div>
-      `).join('');
-
+        </div>`).join('');
       try { lucide.createIcons(); } catch(e){}
     }
 
-    function openEditProductModal(id) {
+    // إضافة صنف جديد (حل مشكلة الـ UUID بشكل نهائي)
+    async function saveNewProduct() {
       const isOwner = currentUser?.role === 'owner';
-      const canEdit = isOwner || (currentUser?.can_edit_product === true);
-      if (!canEdit) {
-        alert('ليس لديك صلاحية لتعديل بيانات الأصناف');
-        return;
+      if (!isOwner && currentUser?.can_add_product !== true) return alert('ليس لديك صلاحية لإضافة أصناف');
+
+      const name = document.getElementById('new-prod-name').value.trim();
+      const cost = parseFloat(document.getElementById('new-prod-cost').value) || 0;
+      const price = parseFloat(document.getElementById('new-prod-price').value) || 0;
+      const stock = parseInt(document.getElementById('new-prod-stock').value) || 0;
+      const alertQty = parseInt(document.getElementById('new-prod-alert').value) || 2;
+      const cat = document.getElementById('new-prod-cat').value || 'عام';
+
+      if (!name || price <= 0) return alert('يرجى إدخال اسم الصنف وسعر البيع بشكل صحيح');
+
+      const payload = { name, cost_price: cost, selling_price: price, stock_quantity: stock, min_stock_alert: alertQty, category: cat };
+
+      if (navigator.onLine && db) {
+        const { data, error } = await db.from('products').insert([payload]).select().single();
+        if (error) return alert('خطأ في السيرفر: ' + error.message);
+        if (data) allProducts.unshift(data);
+      } else {
+        const local = { id: (crypto.randomUUID ? crypto.randomUUID() : 'prod_' + Date.now()), ...payload, created_at: new Date().toISOString() };
+        allProducts.unshift(local);
       }
 
-      const p = allProducts.find(item => item.id === id);
+      localStorage.setItem('cached_products', JSON.stringify(allProducts));
+      alert('تم إضافة الصنف بنجاح! 🎉');
+      closeModal('modal-add-product');
+      document.getElementById('new-prod-name').value = '';
+      document.getElementById('new-prod-cost').value = '';
+      document.getElementById('new-prod-price').value = '';
+      document.getElementById('new-prod-stock').value = '1';
+      loadProducts();
+      loadDashboardData();
+    }
+
+    function openEditProductModal(id) {
+      if (currentUser?.role !== 'owner' && currentUser?.can_edit_product !== true) return alert('ليس لديك صلاحية لتعديل الأصناف');
+      const p = allProducts.find(i => i.id === id);
       if (!p) return;
       document.getElementById('edit-prod-id').value = p.id;
       document.getElementById('edit-prod-name').value = p.name;
@@ -1134,14 +770,10 @@
       document.getElementById('edit-prod-stock').value = p.stock_quantity;
       document.getElementById('edit-prod-alert').value = p.min_stock_alert;
       document.getElementById('edit-prod-cat').value = p.category;
-      document.getElementById('modal-edit-product').classList.remove('hidden');
+      openModal('modal-edit-product');
     }
 
     async function saveEditProduct() {
-      const isOwner = currentUser?.role === 'owner';
-      const canEdit = isOwner || (currentUser?.can_edit_product === true);
-      if (!canEdit) return alert('ليس لديك صلاحية لتعديل الأصناف');
-
       const id = document.getElementById('edit-prod-id').value;
       const name = document.getElementById('edit-prod-name').value.trim();
       const cost = parseFloat(document.getElementById('edit-prod-cost').value) || 0;
@@ -1150,341 +782,178 @@
       const alertQty = parseInt(document.getElementById('edit-prod-alert').value) || 2;
       const cat = document.getElementById('edit-prod-cat').value;
 
-      if (!name || price <= 0) return alert('يرجى إدخال اسم الصنف وسعر البيع بشكل صحيح');
-
+      if (!name || price <= 0) return alert('بيانات غير صحيحة');
       if (navigator.onLine && db) {
-        await db.from('products').update({
-          name, cost_price: cost, selling_price: price, stock_quantity: stock, min_stock_alert: alertQty, category: cat
-        }).eq('id', id);
+        await db.from('products').update({ name, cost_price: cost, selling_price: price, stock_quantity: stock, min_stock_alert: alertQty, category: cat }).eq('id', id);
       }
-
-      const p = allProducts.find(item => item.id === id);
-      if (p) {
-        p.name = name; p.cost_price = cost; p.selling_price = price;
-        p.stock_quantity = stock; p.min_stock_alert = alertQty; p.category = cat;
-      }
+      const p = allProducts.find(i => i.id === id);
+      if (p) { Object.assign(p, { name, cost_price: cost, selling_price: price, stock_quantity: stock, min_stock_alert: alertQty, category: cat }); }
       localStorage.setItem('cached_products', JSON.stringify(allProducts));
-
       closeModal('modal-edit-product');
-      loadProducts();
-      loadDashboardData();
+      loadProducts(); loadDashboardData();
     }
 
     async function deleteProduct(id, name) {
-      const isOwner = currentUser?.role === 'owner';
-      const canDelete = isOwner || (currentUser?.can_delete_product === true);
-      if (!canDelete) return alert('ليس لديك صلاحية لحذف الأصناف من المخزن');
-
-      if (!confirm(`هل أنت متأكد من حذف الصنف "${name}" نهائياً من المخزن؟`)) return;
-
+      if (currentUser?.role !== 'owner' && currentUser?.can_delete_product !== true) return alert('ليس لديك صلاحية لحذف الأصناف');
+      if (!confirm(`حذف الصنف "${name}" نهائياً؟`)) return;
       if (navigator.onLine && db) {
         const { error } = await db.from('products').delete().eq('id', id);
-        if (error) return alert('تعذر حذف المنتج لوجوده في فواتير سابقة');
+        if (error) return alert('تعذر الحذف لوجوده بفواتير سابقة');
       }
-
       allProducts = allProducts.filter(p => p.id !== id);
       localStorage.setItem('cached_products', JSON.stringify(allProducts));
-      loadProducts();
-      loadDashboardData();
+      loadProducts(); loadDashboardData();
     }
 
     function filterProductsUI() {
       const q = document.getElementById('search-products-input').value.toLowerCase();
-      const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-      renderProducts(filtered);
+      renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)));
     }
 
     function populatePosSelect(items) {
-      const select = document.getElementById('pos-select-product');
-      select.innerHTML = '<option value="">اختر الصنف من المخزن...</option>' + 
-        items.map(p => `<option value="${p.id}">${p.name} - ${p.selling_price} ج.م (المتوفر: ${p.stock_quantity})</option>`).join('');
+      const s = document.getElementById('pos-select-product');
+      if (s) s.innerHTML = '<option value="">اختر الصنف من المخزن...</option>' + items.map(p => `<option value="${p.id}">${p.name} - ${p.selling_price} ج.م (${p.stock_quantity})</option>`).join('');
     }
 
-    async function saveNewProduct() {
-      const isOwner = currentUser?.role === 'owner';
-      const canAdd = isOwner || (currentUser?.can_add_product === true);
-      if (!canAdd) return alert('ليس لديك صلاحية لإضافة أصناف جديدة');
-
-      const name = document.getElementById('new-prod-name').value.trim();
-      const cost = parseFloat(document.getElementById('new-prod-cost').value) || 0;
-      const price = parseFloat(document.getElementById('new-prod-price').value) || 0;
-      const stock = parseInt(document.getElementById('new-prod-stock').value) || 0;
-      const alertQty = parseInt(document.getElementById('new-prod-alert').value) || 2;
-      const cat = document.getElementById('new-prod-cat').value;
-
-      if (!name || price <= 0) return alert('يرجى إدخال اسم الصنف وسعر البيع');
-
-      const newP = {
-        id: 'prod_' + Date.now(),
-        name, cost_price: cost, selling_price: price, stock_quantity: stock, min_stock_alert: alertQty, category: cat
-      };
-
-      if (navigator.onLine && db) {
-        const { data } = await db.from('products').insert([newP]).select().single();
-        if (data) newP.id = data.id;
-      }
-
-      allProducts.unshift(newP);
-      localStorage.setItem('cached_products', JSON.stringify(allProducts));
-
-      closeModal('modal-add-product');
-      document.getElementById('new-prod-name').value = '';
-      loadProducts();
-    }
-
-    // 4. نقطة البيع (POS)
     function addItemToCurrentInvoice() {
       const prodId = document.getElementById('pos-select-product').value;
       const qty = parseInt(document.getElementById('pos-add-qty').value) || 1;
       if (!prodId) return;
-
       const prod = allProducts.find(p => p.id === prodId);
-      if (!prod) return;
+      if (!prod || prod.stock_quantity < qty) return alert(`الكمية غير متوفرة (المتاح: ${prod ? prod.stock_quantity : 0})`);
 
-      if (prod.stock_quantity < qty) return alert(`الكمية المتوفرة (${prod.stock_quantity}) أقل من المطلوب!`);
-
-      const exist = currentCart.find(i => i.product_id === prodId);
-      if (exist) {
-        exist.quantity += qty;
-      } else {
-        currentCart.push({
-          product_id: prod.id,
-          product_name: prod.name,
-          unit_price: Number(prod.selling_price),
-          unit_cost: Number(prod.cost_price || 0),
-          quantity: qty
-        });
-      }
+      const ex = currentCart.find(i => i.product_id === prodId);
+      if (ex) ex.quantity += qty;
+      else currentCart.push({ product_id: prod.id, product_name: prod.name, unit_price: Number(prod.selling_price), unit_cost: Number(prod.cost_price || 0), quantity: qty });
       updateCartUI();
     }
 
     function updateCartUI() {
-      const container = document.getElementById('pos-cart-items');
+      const c = document.getElementById('pos-cart-items');
       if (currentCart.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 opacity-60 text-xs border border-dashed rounded-2xl">لم يتم إضافة أصناف بعد</div>';
+        c.innerHTML = '<div class="text-center py-6 opacity-60 text-xs border border-dashed rounded-2xl">السلة فارغة</div>';
         document.getElementById('pos-cart-total').innerText = '0.00 ج.م';
         return;
       }
-
-      let subtotal = 0;
-      container.innerHTML = currentCart.map((item, idx) => {
-        const itemTotal = item.unit_price * item.quantity;
-        subtotal += itemTotal;
+      let sub = 0;
+      c.innerHTML = currentCart.map((item, idx) => {
+        const tot = item.unit_price * item.quantity; sub += tot;
         return `
-          <div class="flex items-center justify-between p-2.5 theme-subcard border rounded-xl text-xs">
-            <div>
-              <span class="font-bold block">${item.product_name}</span>
-              <span class="opacity-75 text-[10px]">${item.quantity} × ${item.unit_price} ج.م</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="font-extrabold text-emerald-400">${itemTotal.toFixed(2)} ج.م</span>
-              <button onclick="removeCartItem(${idx})" class="p-1 text-rose-400 hover:opacity-80">✕</button>
-            </div>
-          </div>
-        `;
+          <div class="flex justify-between p-2 t-sub border rounded-xl text-xs">
+            <div><span class="font-bold block">${item.product_name}</span><span class="opacity-75 text-[10px]">${item.quantity} × ${item.unit_price} ج.م</span></div>
+            <div class="flex items-center gap-2"><span class="font-extrabold text-emerald-400">${tot.toFixed(2)} ج.م</span><button onclick="currentCart.splice(${idx},1);updateCartUI();" class="text-rose-400">✕</button></div>
+          </div>`;
       }).join('');
-
-      const discount = parseFloat(document.getElementById('pos-discount-input').value) || 0;
-      const finalTotal = Math.max(0, subtotal - discount);
-      document.getElementById('pos-cart-total').innerText = finalTotal.toFixed(2) + ' ج.م';
+      const disc = parseFloat(document.getElementById('pos-discount-input').value) || 0;
+      document.getElementById('pos-cart-total').innerText = Math.max(0, sub - disc).toFixed(2) + ' ج.م';
     }
 
-    function removeCartItem(idx) {
-      currentCart.splice(idx, 1);
-      updateCartUI();
-    }
-
-    function clearCurrentCart() {
-      currentCart = [];
-      updateCartUI();
-    }
+    function clearCurrentCart() { currentCart = []; updateCartUI(); }
 
     async function confirmAndSaveInvoice() {
-      if (currentCart.length === 0) return alert('سلة الفاتورة فارغة!');
+      if (currentCart.length === 0) return alert('السلة فارغة');
+      const sub = currentCart.reduce((a, b) => a + (b.unit_price * b.quantity), 0);
+      const disc = parseFloat(document.getElementById('pos-discount-input').value) || 0;
+      const finalTot = Math.max(0, sub - disc);
+      const cust = document.getElementById('pos-customer-name').value.trim() || 'عميل نقدي';
+      const pay = document.getElementById('pos-payment-method').value;
 
-      let subtotal = currentCart.reduce((a, b) => a + (b.unit_price * b.quantity), 0);
-      const discount = parseFloat(document.getElementById('pos-discount-input').value) || 0;
-      const finalTotal = Math.max(0, subtotal - discount);
-      const customer = document.getElementById('pos-customer-name').value.trim() || 'عميل نقدي';
-      const payMethod = document.getElementById('pos-payment-method').value;
-
-      const invoiceData = {
-        local_id: 'inv_' + Date.now(),
-        customer_name: customer,
-        total: subtotal,
-        discount: discount,
-        final_total: finalTotal,
-        paid_amount: finalTotal,
-        payment_method: payMethod,
-        created_by: currentUser.full_name,
-        created_at: new Date().toISOString(),
-        items: [...currentCart]
+      const invData = {
+        customer_name: cust, total: sub, discount: disc, final_total: finalTot, paid_amount: finalTot,
+        payment_method: pay, created_by: currentUser.full_name, created_at: new Date().toISOString(), items: [...currentCart]
       };
 
-      for (const item of currentCart) {
-        const orig = allProducts.find(p => p.id === item.product_id);
-        if (orig) orig.stock_quantity = Math.max(0, orig.stock_quantity - item.quantity);
-      }
+      currentCart.forEach(it => {
+        const orig = allProducts.find(p => p.id === it.product_id);
+        if (orig) orig.stock_quantity = Math.max(0, orig.stock_quantity - it.quantity);
+      });
       localStorage.setItem('cached_products', JSON.stringify(allProducts));
 
       if (navigator.onLine && db) {
         try {
           const { data: inv, error } = await db.from('invoices').insert([{
-            customer_name: customer,
-            total: subtotal,
-            discount: discount,
-            final_total: finalTotal,
-            paid_amount: finalTotal,
-            payment_method: payMethod,
-            created_by: currentUser.full_name
+            customer_name: cust, total: sub, discount: disc, final_total: finalTot, paid_amount: finalTot, payment_method: pay, created_by: currentUser.full_name
           }]).select().single();
-
           if (!error && inv) {
-            for (const item of currentCart) {
-              await db.from('invoice_items').insert([{
-                invoice_id: inv.id,
-                product_id: item.product_id,
-                product_name: item.product_name,
-                quantity: item.quantity,
-                unit_price: item.unit_price,
-                unit_cost: item.unit_cost,
-                total_price: item.unit_price * item.quantity
-              }]);
-              await db.from('products').update({ stock_quantity: allProducts.find(p => p.id === item.product_id)?.stock_quantity }).eq('id', item.product_id);
+            for (const it of currentCart) {
+              await db.from('invoice_items').insert([{ invoice_id: inv.id, product_id: it.product_id, product_name: it.product_name, quantity: it.quantity, unit_price: it.unit_price, unit_cost: it.unit_cost, total_price: it.unit_price * it.quantity }]);
+              await db.from('products').update({ stock_quantity: allProducts.find(p => p.id === it.product_id)?.stock_quantity }).eq('id', it.product_id);
             }
-            alert(`تم حفظ الفاتورة #${inv.invoice_number || ''} في السيرفر بنجاح!`);
+            alert(`تم حفظ الفاتورة #${inv.invoice_number || ''} بنجاح!`);
           }
-        } catch(e) {
-          queueOfflineInvoice(invoiceData);
-        }
+        } catch(e) { queueOfflineInvoice(invData); }
       } else {
-        queueOfflineInvoice(invoiceData);
-        alert('تم حفظ الفاتورة بنجاح على الهاتف (أوفلاين) وستتم المزامنة عند عودة النت!');
+        queueOfflineInvoice(invData);
+        alert('تم حفظ الفاتورة على الهاتف (أوفلاين) وستتم مزامنتها تلقائياً!');
       }
 
       clearCurrentCart();
       document.getElementById('pos-customer-name').value = '';
-      loadProducts();
-      loadDashboardData();
+      loadProducts(); loadDashboardData();
     }
 
     function queueOfflineInvoice(inv) {
-      const queue = JSON.parse(localStorage.getItem('offline_invoices') || '[]');
-      queue.push(inv);
-      localStorage.setItem('offline_invoices', JSON.stringify(queue));
-      updateQueueBadge();
+      const q = JSON.parse(localStorage.getItem('offline_invoices') || '[]');
+      q.push(inv); localStorage.setItem('offline_invoices', JSON.stringify(q));
+      updateNetworkStatus();
     }
 
     async function syncOfflineQueue() {
       if (!navigator.onLine || !db) return;
-      const queue = JSON.parse(localStorage.getItem('offline_invoices') || '[]');
-      if (queue.length === 0) return;
+      const q = JSON.parse(localStorage.getItem('offline_invoices') || '[]');
+      if (q.length === 0) return;
+      document.getElementById('sync-icon')?.classList.add('animate-spin');
 
-      const icon = document.getElementById('sync-icon');
-      icon.classList.add('animate-spin');
-
-      for (const inv of queue) {
+      for (const inv of q) {
         try {
-          const { data: savedInv, error } = await db.from('invoices').insert([{
-            customer_name: inv.customer_name,
-            total: inv.total,
-            discount: inv.discount,
-            final_total: inv.final_total,
-            paid_amount: inv.paid_amount,
-            payment_method: inv.payment_method,
-            created_by: inv.created_by,
-            created_at: inv.created_at
-          }]).select().single();
-
-          if (!error && savedInv) {
-            for (const item of inv.items) {
-              await db.from('invoice_items').insert([{
-                invoice_id: savedInv.id,
-                product_id: item.product_id,
-                product_name: item.product_name,
-                quantity: item.quantity,
-                unit_price: item.unit_price,
-                unit_cost: item.unit_cost,
-                total_price: item.unit_price * item.quantity
-              }]);
-              await db.from('products').update({ stock_quantity: allProducts.find(p => p.id === item.product_id)?.stock_quantity }).eq('id', item.product_id);
+          const { data: sInv } = await db.from('invoices').insert([{ customer_name: inv.customer_name, total: inv.total, discount: inv.discount, final_total: inv.final_total, paid_amount: inv.paid_amount, payment_method: inv.payment_method, created_by: inv.created_by, created_at: inv.created_at }]).select().single();
+          if (sInv) {
+            for (const it of inv.items) {
+              await db.from('invoice_items').insert([{ invoice_id: sInv.id, product_id: it.product_id, product_name: it.product_name, quantity: it.quantity, unit_price: it.unit_price, unit_cost: it.unit_cost, total_price: it.unit_price * it.quantity }]);
+              await db.from('products').update({ stock_quantity: allProducts.find(p => p.id === it.product_id)?.stock_quantity }).eq('id', it.product_id);
             }
           }
         } catch(e){}
       }
-
       localStorage.removeItem('offline_invoices');
-      icon.classList.remove('animate-spin');
-      updateQueueBadge();
-      loadDashboardData();
-      alert('تمت مزامنة جميع الفواتير المعلقة مع السيرفر بنجاح! 🚀');
+      document.getElementById('sync-icon')?.classList.remove('animate-spin');
+      updateNetworkStatus(); loadDashboardData();
+      alert('تمت مزامنة الفواتير المعلقة بنجاح! 🚀');
     }
 
-    // 5. إدارة الموظفين والصلاحيات مع دعم التعديل الفوري
+    // إدارة الموظفين والصلاحيات
     async function loadUsers() {
       if (currentUser?.role !== 'owner') return;
       if (navigator.onLine && db) {
         try {
-          const { data } = await db.from('app_users').select('*').order('created_at', { ascending: true });
-          if (data) {
-            allUsers = data;
-            localStorage.setItem('cached_users', JSON.stringify(data));
-          }
+          const { data } = await db.from('app_users').select('*').order('created_at');
+          if (data) { allUsers = data; localStorage.setItem('cached_users', JSON.stringify(data)); }
         } catch(e){}
-      } else {
-        allUsers = JSON.parse(localStorage.getItem('cached_users') || '[]');
-      }
+      } else allUsers = JSON.parse(localStorage.getItem('cached_users') || '[]');
 
-      const container = document.getElementById('users-list-container');
-      if (!allUsers || allUsers.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-xs opacity-60">لا يوجد موظفون مضافون</div>';
-        return;
-      }
+      const c = document.getElementById('users-list-container');
+      if (!allUsers || allUsers.length === 0) { c.innerHTML = '<div class="text-center py-4 text-xs opacity-60">لا يوجد موظفون</div>'; return; }
 
-      container.innerHTML = allUsers.map(u => `
-        <div class="theme-card border rounded-2xl p-3 flex items-center justify-between text-xs">
+      c.innerHTML = allUsers.map(u => `
+        <div class="t-card border rounded-2xl p-3 flex justify-between items-center text-xs">
           <div>
-            <div class="flex items-center gap-2">
-              <span class="font-bold">${u.full_name}</span>
-              <span class="text-[9px] px-1.5 py-0.5 rounded font-bold ${u.role === 'owner' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}">${u.role === 'owner' ? 'صاحب المحل' : 'موظف'}</span>
-            </div>
-            <div class="text-[10px] opacity-75 mt-1">اسم المستخدم: ${u.username} | الـ PIN: <strong>${u.pin}</strong></div>
-            <div class="text-[9px] opacity-60 mt-0.5">
-              ${u.can_add_product ? '✔ إضافة ' : ''}
-              ${u.can_edit_product ? '✔ تعديل ' : ''}
-              ${u.can_delete_product ? '✔ حذف ' : ''}
-              ${u.can_view_reports ? '✔ أرباح ' : ''}
-            </div>
+            <div class="flex items-center gap-1.5"><span class="font-bold">${u.full_name}</span><span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${u.role === 'owner' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}">${u.role === 'owner' ? 'صاحب المحل' : 'موظف'}</span></div>
+            <div class="text-[10px] opacity-75 mt-0.5">${u.username} | الـ PIN: <strong>${u.pin}</strong></div>
           </div>
-          ${u.role !== 'owner' ? `
-            <div class="flex items-center gap-1">
-              <!-- زر تعديل الصلاحيات الفوري -->
-              <button onclick="openEditUserModal('${u.id}')" class="p-2 text-blue-400 hover:opacity-80 rounded-xl" title="تعديل الصلاحيات">
-                <i data-lucide="edit-3" class="w-4 h-4"></i>
-              </button>
-              <!-- زر حذف الحساب -->
-              <button onclick="deleteUser('${u.id}')" class="p-2 text-rose-400 hover:opacity-80 rounded-xl" title="حذف">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
-            </div>
-          ` : ''}
-        </div>
-      `).join('');
-
+          ${u.role !== 'owner' ? `<div class="flex gap-1">
+            <button onclick="openEditUserModal('${u.id}')" class="p-1.5 text-blue-400"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+            <button onclick="deleteUser('${u.id}')" class="p-1.5 text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </div>` : ''}
+        </div>`).join('');
       try { lucide.createIcons(); } catch(e){}
     }
 
-    // فتح نافذة تعديل صلاحيات الموظف
     function openEditUserModal(id) {
-      const u = allUsers.find(item => item.id === id);
-      if (!u) return;
-
+      const u = allUsers.find(i => i.id === id); if (!u) return;
       document.getElementById('edit-user-id').value = u.id;
       document.getElementById('edit-user-fullname').value = u.full_name;
       document.getElementById('edit-user-username').value = u.username;
       document.getElementById('edit-user-pin').value = u.pin;
-
-      // وضع علامات الصح على الصلاحيات الحالية للموظف
       document.getElementById('edit-perm-add-prod').checked = u.can_add_product === true;
       document.getElementById('edit-perm-edit-prod').checked = u.can_edit_product === true;
       document.getElementById('edit-perm-del-prod').checked = u.can_delete_product === true;
@@ -1492,59 +961,31 @@
       document.getElementById('edit-perm-reports').checked = u.can_view_reports === true;
       document.getElementById('edit-perm-discounts').checked = u.can_give_discounts === true;
       document.getElementById('edit-perm-expenses').checked = u.can_manage_expenses === true;
-
-      document.getElementById('modal-edit-user').classList.remove('hidden');
+      openModal('modal-edit-user');
     }
 
-    // حفظ تعديل صلاحيات الموظف
     async function saveEditUser() {
       const id = document.getElementById('edit-user-id').value;
       const name = document.getElementById('edit-user-fullname').value.trim();
       const user = document.getElementById('edit-user-username').value.trim().toLowerCase();
       const pin = document.getElementById('edit-user-pin').value.trim();
+      if (!name || !user || !pin) return alert('بيانات ناقصة');
 
-      if (!name || !user || !pin) return alert('يرجى ملء جميع البيانات');
-
-      const addP = document.getElementById('edit-perm-add-prod').checked;
-      const editP = document.getElementById('edit-perm-edit-prod').checked;
-      const delP = document.getElementById('edit-perm-del-prod').checked;
-      const catsP = document.getElementById('edit-perm-cats').checked;
-      const rep = document.getElementById('edit-perm-reports').checked;
-      const disc = document.getElementById('edit-perm-discounts').checked;
-      const expP = document.getElementById('edit-perm-expenses').checked;
-
-      const updatedFields = {
-        full_name: name,
-        username: user,
-        pin: pin,
-        can_add_product: addP,
-        can_edit_product: editP,
-        can_delete_product: delP,
-        can_manage_categories: catsP,
-        can_view_reports: rep,
-        can_give_discounts: disc,
-        can_manage_expenses: expP
+      const fields = {
+        full_name: name, username: user, pin,
+        can_add_product: document.getElementById('edit-perm-add-prod').checked,
+        can_edit_product: document.getElementById('edit-perm-edit-prod').checked,
+        can_delete_product: document.getElementById('edit-perm-del-prod').checked,
+        can_manage_categories: document.getElementById('edit-perm-cats').checked,
+        can_view_reports: document.getElementById('edit-perm-reports').checked,
+        can_give_discounts: document.getElementById('edit-perm-discounts').checked,
+        can_manage_expenses: document.getElementById('edit-perm-expenses').checked
       };
 
-      if (navigator.onLine && db) {
-        let { error } = await db.from('app_users').update(updatedFields).eq('id', id);
-        if (error && error.message && error.message.includes('column')) {
-          const fallback = {
-            full_name: name, username: user, pin: pin,
-            can_view_reports: rep, can_give_discounts: disc
-          };
-          await db.from('app_users').update(fallback).eq('id', id);
-        }
-      }
-
-      // تحديث محلي فوري
-      const target = allUsers.find(item => item.id === id);
-      if (target) {
-        Object.assign(target, updatedFields);
-        localStorage.setItem('cached_users', JSON.stringify(allUsers));
-      }
-
-      alert('تم تحديث صلاحيات الموظف بنجاح!');
+      if (navigator.onLine && db) await db.from('app_users').update(fields).eq('id', id);
+      const target = allUsers.find(i => i.id === id);
+      if (target) { Object.assign(target, fields); localStorage.setItem('cached_users', JSON.stringify(allUsers)); }
+      alert('تم تحديث الصلاحيات بنجاح!');
       closeModal('modal-edit-user');
       loadUsers();
     }
@@ -1553,50 +994,29 @@
       const name = document.getElementById('new-user-fullname').value.trim();
       const user = document.getElementById('new-user-username').value.trim().toLowerCase();
       const pin = document.getElementById('new-user-pin').value.trim();
+      if (!name || !user || !pin) return alert('بيانات ناقصة');
 
-      if (!name || !user || !pin) return alert('يرجى ملء جميع بيانات الموظف والـ PIN');
-
-      const addP = document.getElementById('perm-add-prod').checked;
-      const editP = document.getElementById('perm-edit-prod').checked;
-      const delP = document.getElementById('perm-del-prod').checked;
-      const catsP = document.getElementById('perm-cats').checked;
-      const rep = document.getElementById('perm-reports').checked;
-      const disc = document.getElementById('perm-discounts').checked;
-      const expP = document.getElementById('perm-expenses').checked;
-
-      const newUserObj = {
-        id: 'usr_' + Date.now(),
-        full_name: name,
-        username: user,
-        pin: pin,
-        role: 'employee',
-        can_add_product: addP,
-        can_edit_product: editP,
-        can_delete_product: delP,
-        can_manage_categories: catsP,
-        can_view_reports: rep,
-        can_give_discounts: disc,
-        can_manage_expenses: expP,
-        is_active: true
+      const payload = {
+        full_name: name, username: user, pin, role: 'employee', is_active: true,
+        can_add_product: document.getElementById('perm-add-prod').checked,
+        can_edit_product: document.getElementById('perm-edit-prod').checked,
+        can_delete_product: document.getElementById('perm-del-prod').checked,
+        can_manage_categories: document.getElementById('perm-cats').checked,
+        can_view_reports: document.getElementById('perm-reports').checked,
+        can_give_discounts: document.getElementById('perm-discounts').checked,
+        can_manage_expenses: document.getElementById('perm-expenses').checked
       };
 
       if (navigator.onLine && db) {
-        let { data, error } = await db.from('app_users').insert([newUserObj]).select().single();
-        if (data) newUserObj.id = data.id;
-        if (error && error.message && error.message.includes('column')) {
-          const fallback = {
-            full_name: name, username: user, pin: pin, role: 'employee',
-            can_view_reports: rep, can_give_discounts: disc, is_active: true
-          };
-          const res = await db.from('app_users').insert([fallback]).select().single();
-          if (res.data) newUserObj.id = res.data.id;
-        }
+        const { data, error } = await db.from('app_users').insert([payload]).select().single();
+        if (data) allUsers.push(data);
+        if (error) return alert('خطأ: ' + error.message);
+      } else {
+        payload.id = 'usr_' + Date.now();
+        allUsers.push(payload);
       }
-
-      allUsers.push(newUserObj);
       localStorage.setItem('cached_users', JSON.stringify(allUsers));
-
-      alert('تم حفظ وتفعيل حساب الموظف بنجاح!');
+      alert('تم إضافة الموظف بنجاح!');
       closeModal('modal-add-user');
       document.getElementById('new-user-fullname').value = '';
       document.getElementById('new-user-username').value = '';
@@ -1605,138 +1025,82 @@
     }
 
     async function deleteUser(id) {
-      if (!confirm('هل أنت متأكد من حذف حساب هذا الموظف؟')) return;
-      if (navigator.onLine && db) {
-        await db.from('app_users').delete().eq('id', id);
-      }
+      if (!confirm('حذف هذا الموظف؟')) return;
+      if (navigator.onLine && db) await db.from('app_users').delete().eq('id', id);
       allUsers = allUsers.filter(u => u.id !== id);
       localStorage.setItem('cached_users', JSON.stringify(allUsers));
       loadUsers();
     }
 
-    // 6. الصيانة والمصروفات
+    // الصيانة والمصروفات
     async function loadServices() {
-      let services = [];
+      let srv = [];
       if (navigator.onLine && db) {
         try {
           const { data } = await db.from('service_orders').select('*').order('created_at', { ascending: false });
-          if (data) {
-            services = data;
-            localStorage.setItem('cached_services', JSON.stringify(data));
-          }
+          if (data) { srv = data; localStorage.setItem('cached_services', JSON.stringify(data)); }
         } catch(e){}
-      } else {
-        services = JSON.parse(localStorage.getItem('cached_services') || '[]');
-      }
+      } else srv = JSON.parse(localStorage.getItem('cached_services') || '[]');
 
-      const container = document.getElementById('services-list-container');
-      if (!services || services.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-xs opacity-60">لا توجد طلبات صيانة حالية</div>';
-        return;
-      }
-      container.innerHTML = services.map(s => `
-        <div class="theme-card border rounded-2xl p-3 text-xs space-y-1">
-          <div class="flex justify-between items-center font-bold">
-            <span>${s.customer_name} (${s.customer_phone})</span>
-            <span class="text-amber-400 font-extrabold">${s.customer_charge} ج.م</span>
-          </div>
+      const c = document.getElementById('services-list-container');
+      if (srv.length === 0) { c.innerHTML = '<div class="text-center py-4 text-xs opacity-60">لا توجد طلبات صيانة</div>'; return; }
+      c.innerHTML = srv.map(s => `
+        <div class="t-card border rounded-2xl p-2.5 text-xs space-y-1">
+          <div class="flex justify-between font-bold"><span>${s.customer_name} (${s.customer_phone})</span><span class="text-amber-400">${s.customer_charge} ج.م</span></div>
           <div class="text-[11px] text-blue-400">${s.service_type}</div>
           <div class="text-[10px] opacity-75">${s.address_notes || 'بدون عنوان'}</div>
-          <div class="text-[10px] opacity-60 flex justify-between pt-1 border-t">
-            <span>الفني: ${s.technician_name || 'غير محدد'}</span>
-            <span class="text-emerald-400 font-bold">${s.status === 'completed' ? 'مكتمل' : 'قيد التنفيذ'}</span>
-          </div>
-        </div>
-      `).join('');
+          <div class="text-[9px] opacity-60 flex justify-between border-t pt-1"><span>الفني: ${s.technician_name || '-'}</span><span class="text-emerald-400 font-bold">${s.status === 'completed' ? 'مكتمل' : 'قيد التنفيذ'}</span></div>
+        </div>`).join('');
     }
 
     async function saveNewServiceOrder() {
       const name = document.getElementById('srv-cust-name').value.trim();
       const phone = document.getElementById('srv-cust-phone').value.trim();
-      const type = document.getElementById('srv-type').value;
-      const addr = document.getElementById('srv-address').value.trim();
-      const charge = parseFloat(document.getElementById('srv-charge').value) || 0;
-      const tech = document.getElementById('srv-tech').value.trim();
-
-      if (!name || !phone) return alert('يرجى إدخال اسم العميل ورقم هاتفه');
-
-      const newSrv = {
-        customer_name: name, customer_phone: phone, service_type: type, address_notes: addr, customer_charge: charge, technician_name: tech
+      if (!name || !phone) return alert('اسم العميل ورقمه مطلوبان');
+      const payload = {
+        customer_name: name, customer_phone: phone, service_type: document.getElementById('srv-type').value,
+        address_notes: document.getElementById('srv-address').value.trim(), customer_charge: parseFloat(document.getElementById('srv-charge').value) || 0,
+        technician_name: document.getElementById('srv-tech').value.trim()
       };
-
-      if (navigator.onLine && db) {
-        await db.from('service_orders').insert([newSrv]);
-      }
+      if (navigator.onLine && db) await db.from('service_orders').insert([payload]);
       const cached = JSON.parse(localStorage.getItem('cached_services') || '[]');
-      cached.unshift(newSrv);
-      localStorage.setItem('cached_services', JSON.stringify(cached));
-
+      cached.unshift(payload); localStorage.setItem('cached_services', JSON.stringify(cached));
       closeModal('modal-add-service');
-      loadServices();
-      loadDashboardData();
+      loadServices(); loadDashboardData();
     }
 
     async function loadExpenses() {
-      let expenses = [];
+      let exp = [];
       if (navigator.onLine && db) {
         try {
           const { data } = await db.from('expenses').select('*').order('created_at', { ascending: false });
-          if (data) {
-            expenses = data;
-            localStorage.setItem('cached_expenses', JSON.stringify(data));
-          }
+          if (data) { exp = data; localStorage.setItem('cached_expenses', JSON.stringify(data)); }
         } catch(e){}
-      } else {
-        expenses = JSON.parse(localStorage.getItem('cached_expenses') || '[]');
-      }
+      } else exp = JSON.parse(localStorage.getItem('cached_expenses') || '[]');
 
-      const container = document.getElementById('expenses-list-container');
-      if (!expenses || expenses.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-xs opacity-60">لا توجد مصروفات مسجلة</div>';
-        return;
-      }
-      container.innerHTML = expenses.map(e => `
-        <div class="theme-card border rounded-2xl p-3 flex justify-between items-center text-xs">
-          <div>
-            <span class="font-bold block">${e.category}</span>
-            <span class="text-[10px] opacity-75">${e.notes || 'بدون بيان'}</span>
-          </div>
+      const c = document.getElementById('expenses-list-container');
+      if (exp.length === 0) { c.innerHTML = '<div class="text-center py-4 text-xs opacity-60">لا توجد مصروفات</div>'; return; }
+      c.innerHTML = exp.map(e => `
+        <div class="t-card border rounded-2xl p-2.5 flex justify-between text-xs">
+          <div><span class="font-bold block">${e.category}</span><span class="text-[10px] opacity-75">${e.notes || ''}</span></div>
           <span class="font-extrabold text-rose-400">${Number(e.amount).toFixed(2)} ج.م</span>
-        </div>
-      `).join('');
+        </div>`).join('');
     }
 
     async function saveNewExpense() {
-      const cat = document.getElementById('exp-category').value;
       const amt = parseFloat(document.getElementById('exp-amount').value) || 0;
-      const notes = document.getElementById('exp-notes').value.trim();
-
-      if (amt <= 0) return alert('يرجى إدخال مبلغ الصرف');
-
-      const newExp = {
-        category: cat, amount: amt, notes: notes, created_by: currentUser.full_name
-      };
-
-      if (navigator.onLine && db) {
-        await db.from('expenses').insert([newExp]);
-      }
+      if (amt <= 0) return alert('أدخل المبلغ');
+      const payload = { category: document.getElementById('exp-category').value, amount: amt, notes: document.getElementById('exp-notes').value.trim(), created_by: currentUser.full_name };
+      if (navigator.onLine && db) await db.from('expenses').insert([payload]);
       const cached = JSON.parse(localStorage.getItem('cached_expenses') || '[]');
-      cached.unshift(newExp);
-      localStorage.setItem('cached_expenses', JSON.stringify(cached));
-
+      cached.unshift(payload); localStorage.setItem('cached_expenses', JSON.stringify(cached));
       closeModal('modal-add-expense');
       loadExpenses();
     }
 
-    // فتح وإغلاق النوافذ
-    function openAddProductModal() { document.getElementById('modal-add-product').classList.remove('hidden'); }
-    function openCategoriesModal() { document.getElementById('modal-manage-categories').classList.remove('hidden'); }
-    function openAddServiceModal() { document.getElementById('modal-add-service').classList.remove('hidden'); }
-    function openAddExpenseModal() { document.getElementById('modal-add-expense').classList.remove('hidden'); }
-    function openAddUserModal() { document.getElementById('modal-add-user').classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
 
-    // بدء التشغيل
     initTheme();
     updateNetworkStatus();
     try { lucide.createIcons(); } catch(e){}
